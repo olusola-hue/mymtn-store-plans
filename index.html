@@ -68,13 +68,6 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .switch[aria-checked="true"]{background:var(--green)}
 .switch[aria-checked="true"]::after{transform:translateX(15px)}
 .switch:focus-visible{outline:2px solid #171717;outline-offset:2px}
-.device-card{padding:16px;display:flex;gap:13px;align-items:center}
-.device-art{width:65px;height:68px;border-radius:13px;background:#fff7cf;display:grid;place-items:center;flex-shrink:0}
-.device-art svg{width:40px;height:40px;stroke:#262626;fill:none;stroke-width:1.8}
-.device-info{flex:1;min-width:0}
-.device-info h3{margin:0 0 6px;font-size:16px}
-.device-info p{margin:0;color:#777;font-size:12px;line-height:1.45}
-.device-bottom{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid #eee}
 .offer{font-size:11px;color:#777}
 .empty{padding:36px 20px;text-align:center;color:#777;font-size:14px}
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(460px,100%);height:82px;background:rgba(255,255,255,.98);border:1px solid #e9e9e9;border-bottom:0;border-radius:22px 22px 0 0;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;padding:9px 8px 12px;z-index:5;box-shadow:0 -5px 24px rgba(0,0,0,.04)}
@@ -135,11 +128,9 @@ const plans = [
  {category:"Internet",name:"5 GB",qty:5,unit:"GB",price:"₦1,500",type:"Weekly Plan",validity:"7 Days",points:"2,500",status:"expired"},
  {category:"Call & Message",name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",type:"Monthly Plan",validity:"30 Days",points:"2,500",status:"active",autoRenew:true},
  {category:"Call & Message",name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",type:"Weekly Plan",validity:"7 Days",points:"1,000",status:"exhausted"},
- {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",type:"Weekly Plan",validity:"7 Days",points:"300"}
-];
-const devices=[
- {category:"Devices",name:"FibreX",desc:"Fibre broadband for home and business",icon:"fibre"},
- {category:"Devices",name:"FlyX (ODU)",desc:"Outdoor wireless broadband connectivity",icon:"flyx"}
+ {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",type:"Weekly Plan",validity:"7 Days",points:"300"},
+ {category:"Devices",name:"FibreX",price:"₦20,000",type:"Monthly Plan",validity:"30 Days",points:"20,000",status:"active",autoRenew:true},
+ {category:"Devices",name:"FlyX (ODU)",price:"₦35,000",type:"Monthly Plan",validity:"30 Days",points:"35,000",status:"expiring"}
 ];
 const SHARE_MAX=0.2;
 const shareText=item=>{const v=Math.round(item.qty*SHARE_MAX*10)/10;return "Share up to "+v+" "+item.unit};
@@ -147,23 +138,15 @@ const statusLabels={active:"ACTIVE",expiring:"EXPIRING SOON",expired:"EXPIRED",e
 let currentCategory="Internet",selected=null;
 const cards=document.getElementById("cards"), searchInput=document.getElementById("searchInput");
 const icon=(type)=> type==="share" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.8 7.4-4.4M8.3 13.2l7.4 4.4"/></svg>' : type==="calendar" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 7.8 7.5 9.5 4.3-1.7 7.5-5 7.5-9.5V6z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg>';
-function deviceSvg(type){
- if(type==="fibre")return '<svg viewBox="0 0 48 48"><path d="M8 16 24 7l16 9v23H8zM8 16h32M18 39V25h12v14"/><path d="M13 21h4M31 21h4"/></svg>';
- return '<svg viewBox="0 0 48 48"><rect x="9" y="17" width="30" height="22" rx="3"/><path d="M15 17V9h18v8M17 25h14M17 31h9"/><path d="M5 11a19 19 0 0 1 38 0M11 11a13 13 0 0 1 26 0"/></svg>';
-}
 function render(){
  const q=searchInput.value.trim().toLowerCase();
- let items=(currentCategory==="Devices"?devices:plans.filter(p=>p.category===currentCategory)).filter(x=>(x.name+" "+(x.type||x.desc)).toLowerCase().includes(q));
+ let items=plans.filter(p=>p.category===currentCategory).filter(x=>(x.name+" "+x.type).toLowerCase().includes(q));
  document.getElementById("sectionTitle").textContent=currentCategory==="Internet"?"Internet bundles":currentCategory==="Call & Message"?"Call & message bundles":"Devices & connectivity";
  document.getElementById("countLabel").textContent=items.length+(currentCategory==="Devices"?" devices":currentCategory==="Internet"?" plans":" bundles");
  cards.innerHTML="";
  if(!items.length){cards.innerHTML='<div class="empty">No results found. Try a different search.</div>';return}
  items.forEach(item=>{
   const el=document.createElement("article");el.className="plan-card";
-  if(currentCategory==="Devices"){
-   el.innerHTML=`<div class="device-card"><div class="device-art">${deviceSvg(item.icon)}</div><div class="device-info"><h3>${item.name}</h3><p>${item.desc}</p></div></div><div class="device-bottom"><span class="offer">Pricing available on enquiry</span><button class="primary" data-action="details">View offer</button></div>`;
-   el.querySelector("button").addEventListener("click",()=>openModal(item,true));
-  }else{
    const st=statusLabels[item.status];
    const ribbon=st?`<div class="status-row"><span class="ribbon ${item.status}">${st}</span></div>`:"";
    const action=(item.status==="active"||item.status==="expiring")?"Stack Plan":(item.status==="expired"||item.status==="exhausted")?"Renew Plan":null;
@@ -179,7 +162,6 @@ function render(){
     top.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggleCard()}});
     el.querySelector(".pay-btn").addEventListener("click",()=>toast(action+" for "+item.name+" is a prototype placeholder."));
    }
-  }
   cards.appendChild(el);
  });
 }
