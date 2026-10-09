@@ -66,6 +66,7 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .meta-left{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .meta{display:flex;gap:5px;align-items:center;color:#5f6268;font-size:11px}
 .meta svg{width:14px;height:14px}
+.meta.low{color:#d32f2f;font-weight:600}
 .timer{padding:9px 16px;background:#fff9dd;border-top:1px solid #f6e8a7;color:#695600;font-size:11px;display:flex;justify-content:space-between;align-items:center}
 .timer strong{font-variant-numeric:tabular-nums;letter-spacing:.5px}
 .primary{border:0;border-radius:10px;background:var(--mtn-yellow);padding:11px 18px;font-size:12px;font-weight:850;color:#111;min-width:95px}
@@ -204,25 +205,29 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 <div class="sheet-backdrop" id="sheetBackdrop"><section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"><div class="sheet-grab"></div><div id="sheetBody"></div></section></div>
 <script>
 const plans = [
- {category:"Internet",lines:["primary"],name:"30 GB",qty:30,unit:"GB",price:"₦10,000",type:"Monthly Plan",validity:"30 Days",points:"40,055",status:"active",autoRenew:true},
- {category:"Internet",lines:["primary"],name:"15 GB",qty:15,unit:"GB",price:"₦5,000",type:"Betamix Bundle Max",validity:"20 Days",points:"10,500",status:"expiring"},
- {category:"Internet",lines:["primary"],name:"10 GB",qty:10,unit:"GB",price:"₦3,500",type:"Monthly Plan",validity:"30 Days",points:"5,000",status:"exhausted"},
- {category:"Internet",lines:["primary"],name:"5 GB",qty:5,unit:"GB",price:"₦1,500",type:"Weekly Plan",validity:"7 Days",points:"2,500",status:"expired"},
- {category:"Call & Message",lines:["primary"],name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",type:"Monthly Plan",validity:"30 Days",points:"2,500",status:"active",autoRenew:true},
- {category:"Call & Message",lines:["primary"],name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",type:"Weekly Plan",validity:"7 Days",points:"1,000",status:"exhausted"},
- {category:"Call & Message",lines:["primary"],name:"50 SMS",qty:50,unit:"SMS",price:"₦300",type:"Weekly Plan",validity:"7 Days",points:"300"},
- {category:"Internet",lines:["fibrex"],name:"FibreX",price:"₦20,000",type:"50Mbps",validity:"30 Days",points:"20,000",status:"active",autoRenew:true},
- {category:"Internet",lines:["flyx"],name:"FlyX (ODU)",price:"₦35,000",type:"100Mbps",validity:"30 Days",points:"35,000",status:"expiring"},
- {category:"Entertainment",lines:["primary"],name:"Netflix",price:"₦5,000",type:"Standard Plan",validity:"30 Days",points:"5,000",status:"active",autoRenew:true},
- {category:"Entertainment",lines:["primary"],name:"Apple Music",price:"₦1,500",type:"Individual Plan",validity:"30 Days",points:"1,500",status:"active"},
- {category:"Entertainment",lines:["primary"],name:"Spotify",price:"₦1,300",type:"Premium Individual",validity:"30 Days",points:"1,300",status:"expiring"},
- {category:"Entertainment",lines:["primary"],name:"DSTV",price:"₦15,700",type:"Compact Plan",validity:"30 Days",points:"15,700",status:"expired"},
- {category:"Internet",lines:["work"],name:"100 GB",qty:100,unit:"GB",price:"₦30,000",type:"Business Monthly Plan",validity:"30 Days",points:"30,000",status:"active",autoRenew:true},
- {category:"Internet",lines:["work"],name:"50 GB",qty:50,unit:"GB",price:"₦17,000",type:"Corporate Bundle",validity:"30 Days",points:"17,000",status:"expiring"},
- {category:"Internet",lines:["work"],name:"20 GB",qty:20,unit:"GB",price:"₦6,000",type:"Business Weekly Plan",validity:"7 Days",points:"6,000",status:"exhausted"},
- {category:"Call & Message",lines:["work"],name:"500 Minutes",qty:500,unit:"Min",price:"₦8,000",type:"Business Voice Plan",validity:"30 Days",points:"8,000",status:"active",autoRenew:true},
- {category:"Call & Message",lines:["work"],name:"1,000 SMS",qty:1000,unit:"SMS",price:"₦2,500",type:"Bulk SMS Bundle",validity:"30 Days",points:"2,500",status:"expired"}
+ {category:"Internet",lines:["primary"],name:"30 GB",qty:30,unit:"GB",price:"₦10,000",tag:"",term:30,left:18,points:"40,055",status:"active",autoRenew:true},
+ {category:"Internet",lines:["primary"],name:"15 GB",qty:15,unit:"GB",price:"₦5,000",tag:"Betamix Bundle Max",term:14,left:3,points:"10,500",status:"expiring"},
+ {category:"Internet",lines:["primary"],name:"10 GB",qty:10,unit:"GB",price:"₦3,500",tag:"",term:30,left:12,points:"5,000",status:"exhausted"},
+ {category:"Internet",lines:["primary"],name:"5 GB",qty:5,unit:"GB",price:"₦1,500",tag:"",term:7,left:0,points:"2,500",status:"expired"},
+ {category:"Call & Message",lines:["primary"],name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",tag:"",term:30,left:22,points:"2,500",status:"active",autoRenew:true},
+ {category:"Call & Message",lines:["primary"],name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",tag:"",term:7,left:4,points:"1,000",status:"exhausted"},
+ {category:"Call & Message",lines:["primary"],name:"50 SMS",qty:50,unit:"SMS",price:"₦300",tag:"",term:7,left:7,points:"300"},
+ {category:"Internet",lines:["fibrex"],name:"FibreX",price:"₦20,000",tag:"50Mbps",term:30,left:16,points:"20,000",status:"active",autoRenew:true},
+ {category:"Internet",lines:["flyx"],name:"FlyX (ODU)",price:"₦35,000",tag:"100Mbps",term:30,left:5,points:"35,000",status:"expiring"},
+ {category:"Entertainment",lines:["primary"],name:"Netflix",price:"₦5,000",tag:"Standard",term:30,left:24,points:"5,000",status:"active",autoRenew:true},
+ {category:"Entertainment",lines:["primary"],name:"Apple Music",price:"₦1,500",tag:"Individual",term:30,left:9,points:"1,500",status:"active"},
+ {category:"Entertainment",lines:["primary"],name:"Spotify",price:"₦1,300",tag:"Premium Individual",term:30,left:2,points:"1,300",status:"expiring"},
+ {category:"Entertainment",lines:["primary"],name:"DSTV",price:"₦15,700",tag:"Compact",term:30,left:0,points:"15,700",status:"expired"},
+ {category:"Internet",lines:["work"],name:"100 GB",qty:100,unit:"GB",price:"₦30,000",tag:"Business",term:30,left:20,points:"30,000",status:"active",autoRenew:true},
+ {category:"Internet",lines:["work"],name:"50 GB",qty:50,unit:"GB",price:"₦17,000",tag:"Corporate Bundle",term:30,left:6,points:"17,000",status:"expiring"},
+ {category:"Internet",lines:["work"],name:"20 GB",qty:20,unit:"GB",price:"₦6,000",tag:"Business",term:7,left:3,points:"6,000",status:"exhausted"},
+ {category:"Call & Message",lines:["work"],name:"500 Minutes",qty:500,unit:"Min",price:"₦8,000",tag:"Business Voice",term:30,left:11,points:"8,000",status:"active",autoRenew:true},
+ {category:"Call & Message",lines:["work"],name:"1,000 SMS",qty:1000,unit:"SMS",price:"₦2,500",tag:"Bulk SMS Bundle",term:30,left:0,points:"2,500",status:"expired"}
 ];
+const termLabel=d=>d===1?"1 Day Plan":d===7?"1 Week Plan":d===14?"2 Weeks Plan":d===30?"1 Month Plan":d+" Days Plan";
+plans.forEach(p=>{p.type=(p.tag?p.tag+" · ":"")+termLabel(p.term)});
+const daysText=n=>n+(n===1?" Day":" Days");
+
 const SHARE_MAX=0.2;
 const shareText=item=>{const v=Math.round(item.qty*SHARE_MAX*10)/10;return "Share up to "+v+" "+item.unit};
 const statusLabels={active:"ACTIVE",expiring:"EXPIRING SOON",expired:"EXPIRED",exhausted:"EXHAUSTED"};
@@ -242,7 +247,7 @@ function render(){
    const ribbon=st?`<div class="status-row"><span class="ribbon ${item.status}">${st}</span></div>`:"";
    const action=(item.status==="active"||item.status==="expiring")?"Stack Plan":(item.status==="expired"||item.status==="exhausted")?"Renew Plan":null;
    const chev=action?'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>':"";
-   el.innerHTML=`${ribbon}<div class="card-top"${action?' tabindex="0" role="button" aria-expanded="false"':""}><div><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div><div class="price${action?" has-chev":""}">${item.price}${chev}</div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span>${item.category==="Internet"&&item.qty?`<span class="meta">${icon("share")} ${shareText(item)}</span>`:""}</div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}${action?`<div class="pay-panel"><div class="pay-inner"><button class="primary pay-btn">${action}</button></div></div>`:""}`;
+   el.innerHTML=`${ribbon}<div class="card-top"${action?' tabindex="0" role="button" aria-expanded="false"':""}><div><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div><div class="price${action?" has-chev":""}">${item.price}${chev}</div></div><div class="card-meta"><div class="meta-left"><span class="meta${item.left<7?" low":""}">${icon("calendar")} ${daysText(item.left)}</span>${item.category==="Internet"&&item.qty?`<span class="meta">${icon("share")} ${shareText(item)}</span>`:""}</div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}${action?`<div class="pay-panel"><div class="pay-inner"><button class="primary pay-btn">${action}</button></div></div>`:""}`;
    const sw=el.querySelector(".switch");
    sw.addEventListener("click",()=>{item.autoRenew=!item.autoRenew;sw.setAttribute("aria-checked",item.autoRenew);toast("Auto-renewal turned "+(item.autoRenew?"on":"off")+" for "+item.name+".")});
    if(action){
@@ -339,8 +344,9 @@ function showStep(){
   html=`<div class="sheet-head"><h2 id="sheetTitle" tabindex="-1">${f.action}</h2><button class="sheet-x" data-act="close" aria-label="Close">${ic.x}</button></div>
   <div class="summary"><div class="sum-top"><div><div class="sum-name">${item.name}</div><div class="sum-type">${item.type}</div></div><div class="sum-price">${item.price}</div></div>
   <div class="sum-row"><span>Number</span><strong>${num.number}${num.dedicated?" · "+num.label:""}</strong></div>
-  <div class="sum-row"><span>Validity</span><strong>${item.validity}</strong></div>
-  <div class="sum-row"><span>Starts</span><strong>${stack?"When your current plan ends":"Immediately"}</strong></div>
+  <div class="sum-row"><span>Plan length</span><strong>${daysText(item.term)}</strong></div>
+  <div class="sum-row"><span>Days left</span><strong>${daysText(item.left)} → ${daysText(item.left+item.term)}</strong></div>
+  <div class="sum-row"><span>Starts</span><strong>${item.left>0?"Added to your current days":"Immediately"}</strong></div>
   <div class="sum-row"><span>Total</span><strong>${item.price}</strong></div></div>
   <p class="pay-title">Pay with</p>
   <div class="methods" role="radiogroup" aria-label="Payment method">${allMethods().map(m=>`<button class="method" role="radio" data-act="method" data-id="${m.id}" aria-checked="${f.method===m.id}"${m.ok?"":" disabled"}><span class="m-text"><b>${m.name}</b><small${m.ok?"":' class="bad"'}>${m.ok?m.sub:"Insufficient balance · "+m.sub.replace("Balance ","")}</small></span><span class="m-radio"></span></button>`).join("")}</div>
@@ -385,7 +391,7 @@ function showStep(){
   html=`<div class="proc" role="status"><div class="spinner" aria-hidden="true"></div><p>Processing your payment…</p></div>`;
  }else{
   html=`<div class="done-ic">${ic.ok}</div><h2 class="done-title" id="sheetTitle" tabindex="-1">${stack?"Plan stacked":"Plan renewed"}</h2>
-  <p class="done-sub">${stack?`Your new ${item.name} bundle starts when your current plan ends.`:`Your ${item.name} plan is active again for ${item.validity}.`}</p>
+  <p class="done-sub">Your ${item.name} plan now has <b>${daysText(item.left)}</b> left.</p>
   <div class="receipt"><div class="sum-row"><span>Reference</span><strong>${f.ref}</strong></div><div class="sum-row"><span>Date</span><strong>${f.when}</strong></div><div class="sum-row"><span>Number</span><strong>${num.number}</strong></div><div class="sum-row"><span>Plan</span><strong>${item.name} · ${item.type}</strong></div><div class="sum-row"><span>Paid with</span><strong>${f.paidWith}</strong></div><div class="sum-row"><span>Amount paid</span><strong>${item.price}</strong></div></div>
   <button class="primary wide" data-act="done">Done</button>`;
  }
@@ -439,7 +445,7 @@ function finishPayment(){
   if(f.card.save&&!savedCards.some(c=>c.last4===last4))savedCards.push({id:"card:"+last4,last4});
  }else if(f.method.startsWith("card:")){paid="Debit card ending "+f.method.slice(5)}
  f.paidWith=paid;
- item.status="active";
+ item.left+=item.term;item.status="active";
  f.ref="MTN"+String(Math.floor(Math.random()*1e9)).padStart(9,"0");
  f.when=new Date().toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
  f.step="done";showStep();render();
