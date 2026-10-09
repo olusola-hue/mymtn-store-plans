@@ -170,6 +170,34 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .check input{width:18px;height:18px;accent-color:#171717;flex-shrink:0}
 .form-note{margin:0;font-size:10px;color:#9a9a9a;line-height:1.4}
 @media(prefers-reduced-motion:reduce){.sheet{animation:none}.spinner{animation-duration:2.4s}.bio-btn.scanning::after{animation:none}}
+.rw-body{padding:0 16px;display:grid;gap:13px}
+.rw-h{margin:6px 4px 0;font-size:15px;font-weight:800;letter-spacing:-.2px}
+.coin-hero{border-radius:20px;background:linear-gradient(135deg,#ffcb05,#ffdf5c);padding:20px 18px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.coin-hero small{display:block;font-size:12px;font-weight:700;color:#5a4a00}
+.coin-hero b{display:block;font-size:34px;letter-spacing:-1px;font-weight:850;margin-top:4px;font-variant-numeric:tabular-nums}
+.coin-hero span{font-size:12px;font-weight:700;color:#5a4a00;text-align:right}
+.rw-card{border:1px solid #e9e9e9;border-radius:17px;padding:16px;background:#fff}
+.rw-row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.rw-title{font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.25}
+.rw-sub{margin-top:5px;font-size:12px;color:#6e7177;line-height:1.45}
+.rw-tag{display:inline-block;font-size:9px;font-weight:900;letter-spacing:.5px;padding:4px 8px;border-radius:7px;background:#fff1b8;color:#6b5200;margin-bottom:8px}
+.rw-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px}
+.rw-days{font-size:11px;color:#5f6268}
+.rw-days.low{color:#d32f2f;font-weight:600}
+.rw-btn{border:0;border-radius:10px;background:var(--mtn-yellow);padding:10px 16px;font-size:12px;font-weight:850;color:#111;white-space:nowrap}
+.rw-btn:disabled{background:#eee;color:#8a8d93;cursor:not-allowed}
+.rw-btn.ghost{background:#fff;border:1px solid #d9d9d9}
+.rw-btn:focus-visible,.tab:focus-visible{outline:2px solid #171717;outline-offset:2px}
+.coin-cost{font-size:15px;font-weight:850;white-space:nowrap}
+.code-box{margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1.5px dashed #cfcfcf;border-radius:12px;background:#fafafa}
+.code-box code{font-size:15px;font-weight:800;letter-spacing:1px}
+.promo-top{border-radius:14px;padding:16px;margin:-4px -4px 12px;color:#111}
+.hist{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid #f0f0f0;font-size:13px}
+.hist:first-of-type{border-top:0}
+.hist small{display:block;color:#8a8d93;font-size:11px;margin-top:2px}
+.hist b{font-variant-numeric:tabular-nums}
+.hist .pos{color:var(--green)}
+.hist .neg{color:#b3261e}
 .disclaimer{padding:20px 22px 0;color:#9a9a9a;font-size:10px;line-height:1.5}
 @media(min-width:600px){body{background:#f6f6f6;padding:20px 0}.app{border-radius:24px;box-shadow:0 8px 40px #0000;overflow:hidden;min-height:calc(100vh - 40px)}.bottom-nav{bottom:20px;border-radius:22px}.toast{bottom:116px}}
 </style>
@@ -184,6 +212,7 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
       <ul class="num-menu" id="numMenu" role="listbox" aria-label="Your numbers" hidden></ul>
     </div>
   </header>
+  <div id="payView">
   <div class="search-wrap"><label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="searchInput" type="search" placeholder="Search plans or subscriptions…" autocomplete="off"></label></div>
   <div class="tabs" role="tablist" aria-label="Store categories">
     <button class="tab active" data-category="Internet" role="tab" aria-selected="true">Internet</button>
@@ -193,6 +222,16 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
   <div class="section-head"><h2 id="sectionTitle">Internet bundles</h2><span class="count" id="countLabel">4 plans</span></div>
   <main class="cards" id="cards"></main>
   <p class="disclaimer">Illustrative prototype only. Prices, reward points, availability and promotional countdowns are sample content and do not represent live MTN offers.</p>
+  </div>
+  <section id="rewardsView" hidden>
+    <div class="tabs" role="tablist" aria-label="Rewards sections">
+      <button class="tab active" data-rtab="offers" role="tab" aria-selected="true">Offers</button>
+      <button class="tab" data-rtab="coin" role="tab" aria-selected="false">MTN Coin</button>
+      <button class="tab" data-rtab="promos" role="tab" aria-selected="false">Promotions</button>
+    </div>
+    <div id="rewardsBody" class="rw-body" role="tabpanel"></div>
+    <p class="disclaimer">Illustrative prototype only. Offers, promo codes, MTN Coin balances and conversion rates are sample content and do not represent live MTN offers.</p>
+  </section>
   <nav class="bottom-nav" aria-label="Main navigation">
     <button class="nav-item" data-nav="Home"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button>
     <button class="nav-item" data-nav="Play"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 8 6 4-6 4z"/></svg><span>Play</span></button>
@@ -261,9 +300,9 @@ function render(){
   cards.appendChild(el);
  });
 }
-document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{currentCategory=btn.dataset.category;document.querySelectorAll(".tab").forEach(t=>{let active=t===btn;t.classList.toggle("active",active);t.setAttribute("aria-selected",active)});render()}));
+document.querySelectorAll(".tab[data-category]").forEach(btn=>btn.addEventListener("click",()=>{currentCategory=btn.dataset.category;document.querySelectorAll(".tab[data-category]").forEach(t=>{let active=t===btn;t.classList.toggle("active",active);t.setAttribute("aria-selected",active)});render()}));
 searchInput.addEventListener("input",render);
-document.querySelectorAll("[data-nav]").forEach(btn=>btn.addEventListener("click",()=>{const dest=btn.dataset.nav;if(dest==="Pay"){toast("You're already in Pay.");return}toast(dest+" navigation is a prototype placeholder.")}));
+document.querySelectorAll("[data-nav]").forEach(btn=>btn.addEventListener("click",()=>{const dest=btn.dataset.nav;if(dest==="Pay"){if(!rewardsView.hidden){showView("Pay");return}toast("You're already in Pay.");return}if(dest==="Rewards"){showView("Rewards");return}toast(dest+" navigation is a prototype placeholder.")}));
 let toastTimer;
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2800)}
 const numbers=[
@@ -282,7 +321,7 @@ function renderNumbers(){
 }
 function setNumMenu(open){numMenu.hidden=!open;numBtn.setAttribute("aria-expanded",open);if(open){const sel=numMenu.querySelector('[aria-selected="true"]');sel&&sel.focus()}}
 numBtn.addEventListener("click",()=>setNumMenu(numMenu.hidden));
-numMenu.addEventListener("click",e=>{const b=e.target.closest(".num-opt");if(!b)return;activeNumber=+b.dataset.i;renderNumbers();setNumMenu(false);numBtn.focus();const n=numbers[activeNumber];if(!plans.some(p=>p.category===currentCategory&&belongsToActive(p)))document.querySelector('.tab[data-category="Internet"]').click();else render();toast("Switched to "+n.number+(n.dedicated?" ("+n.label+")":"")+".")});
+numMenu.addEventListener("click",e=>{const b=e.target.closest(".num-opt");if(!b)return;activeNumber=+b.dataset.i;renderNumbers();setNumMenu(false);numBtn.focus();const n=numbers[activeNumber];if(!plans.some(p=>p.category===currentCategory&&belongsToActive(p)))document.querySelector('.tab[data-category="Internet"]').click();else render();if(!rewardsView.hidden)renderRewards();toast("Switched to "+n.number+(n.dedicated?" ("+n.label+")":"")+".")});
 numMenu.addEventListener("keydown",e=>{const opts=[...numMenu.querySelectorAll(".num-opt")],i=opts.indexOf(document.activeElement);if(e.key==="ArrowDown"){e.preventDefault();opts[(i+1)%opts.length].focus()}else if(e.key==="ArrowUp"){e.preventDefault();opts[(i-1+opts.length)%opts.length].focus()}});
 document.addEventListener("click",e=>{if(!numMenu.hidden&&!e.target.closest(".num-switch"))setNumMenu(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!numMenu.hidden){setNumMenu(false);numBtn.focus()}});
@@ -471,7 +510,7 @@ sheetBody.addEventListener("click",e=>{
  else if(act==="back"){clearTimeout(bioTimer);flow.step="review";flow.code="";showStep()}
  else if(act==="other"){flow.other=a.dataset.id;showStep();const sel=sheetBody.querySelector('.method.sub[aria-checked="true"]');sel&&sel.focus()}
  else if(act==="paid")startProcessing();
- else if(act==="copy"){const t=flow.step==="ussd"?flow.ussd:flow.acct;try{navigator.clipboard.writeText(t)}catch(_){}a.textContent="Copied"}
+ else if(act==="copy"){const t=flow.step==="ussd"?flow.ussd:flow.acct;try{navigator.clipboard.writeText(t).catch(()=>{})}catch(_){}a.textContent="Copied"}
  else if(act==="bio")runBio();
  else if(act==="usepin"){clearTimeout(bioTimer);flow.step="pin";flow.code="";showStep()}
  else if(act==="resend"){flow.code="";flow.sent=true;updateCode();startOtpTimer();}
@@ -491,6 +530,63 @@ document.addEventListener("keydown",e=>{
  if(!flow)return;
  if(e.key==="Escape"&&flow.step!=="proc"){closeCheckout();return}
  if(flow.step==="pin"||flow.step==="otp"){if(/^[0-9]$/.test(e.key)){e.preventDefault();pressKey(e.key)}else if(e.key==="Backspace"){e.preventDefault();pressKey("back")}}
+});
+
+/* ---------- Rewards: Offers, MTN Coin, Promotions ---------- */
+const coin={balance:1250,history:[
+ {t:"Renewed 30 GB Monthly Plan",d:"7 Oct",n:50},{t:"Turned on Auto-renewal",d:"3 Oct",n:20},{t:"Referral bonus",d:"28 Sep",n:200},{t:"Redeemed ₦200 airtime",d:"21 Sep",n:-200}]};
+const COIN_NAIRA=1;
+const offers=[
+ {id:"o1",tag:"FOR YOU",title:"Double data Tuesday",sub:"Get 2× data when you buy any Internet plan on a Tuesday.",left:12},
+ {id:"o2",tag:"CASHBACK",title:"5% back in MTN Coin",sub:"Pay for any renewal with MoMo Wallet and earn 5% of the price back in MTN Coin.",left:5},
+ {id:"o3",tag:"LOYALTY",title:"Free 1 GB on your 3rd renewal",sub:"Renew the same plan three times in a row and we add 1 GB on us.",left:21},
+ {id:"o4",tag:"ENTERTAINMENT",title:"Apple Music, 2 months for 1",sub:"Stack Apple Music Individual and the next month is free.",left:2}];
+const claimed=new Set();
+const redeemables=[
+ {id:"r1",title:"₦500 airtime",sub:"Added to your Airtime balance instantly.",cost:500,airtime:500},
+ {id:"r2",title:"1 GB data bonus",sub:"Valid for 7 days on Primary number.",cost:400},
+ {id:"r3",title:"₦1,000 off Netflix",sub:"Applied to your next Netflix payment.",cost:1000}];
+const earnWays=[["Renew a plan","+50"],["Turn on Auto-renewal","+20"],["Refer a friend","+200"]];
+const promos=[
+ {id:"p1",bg:"#ffe680",title:"Weekend Data Bonanza",sub:"Extra 20% data on every Internet plan bought Friday to Sunday.",code:"WEEKEND20",left:3,terms:"Applies to Internet plans only. One use per day."},
+ {id:"p2",bg:"#d9ecff",title:"Netflix on us",sub:"50% off your first month when you add Netflix through Pay Bills.",code:"NFLX50",left:14,terms:"New Netflix subscriptions only. Capped at ₦2,500 off."},
+ {id:"p3",bg:"#dff3e6",title:"Refer & earn",sub:"Invite a friend and you both get 200 MTN Coin when they make their first payment.",code:"SOLA200",left:30,terms:"Friend must be a new MoMo user."}];
+let rewardsTab="offers";
+const rwBody=document.getElementById("rewardsBody"),payView=document.getElementById("payView"),rewardsView=document.getElementById("rewardsView");
+const fmt=n=>n.toLocaleString("en-NG");
+const daysLeft=n=>`<span class="rw-days${n<7?" low":""}">Ends in ${daysText(n)}</span>`;
+function renderRewards(){
+ let h="";
+ if(rewardsTab==="offers"){
+  h=`<p class="rw-h">Offers picked for ${numbers[activeNumber].number}</p>`+offers.map(o=>{const c=claimed.has(o.id);return `<article class="rw-card"><span class="rw-tag">${o.tag}</span><div class="rw-title">${o.title}</div><p class="rw-sub">${o.sub}</p><div class="rw-foot">${daysLeft(o.left)}<button class="rw-btn${c?" ghost":""}" data-ract="claim" data-id="${o.id}"${c?" disabled":""}>${c?"Claimed ✓":"Claim offer"}</button></div></article>`}).join("");
+ }else if(rewardsTab==="coin"){
+  h=`<div class="coin-hero"><div><small>MTN Coin balance</small><b id="coinBal">${fmt(coin.balance)}</b></div><span>≈ ${"₦"+fmt(coin.balance*COIN_NAIRA)}<br>1 Coin = ₦${COIN_NAIRA}</span></div>
+  <p class="rw-h">Redeem</p>`+redeemables.map(x=>`<article class="rw-card"><div class="rw-row"><div><div class="rw-title">${x.title}</div><p class="rw-sub">${x.sub}</p></div><div class="coin-cost">${fmt(x.cost)}</div></div><div class="rw-foot"><span class="rw-days">${coin.balance>=x.cost?"":"Need "+fmt(x.cost-coin.balance)+" more Coin"}</span><button class="rw-btn" data-ract="redeem" data-id="${x.id}"${coin.balance>=x.cost?"":" disabled"}>Redeem</button></div></article>`).join("")+
+  `<p class="rw-h">Ways to earn</p><article class="rw-card">${earnWays.map(w=>`<div class="hist"><span>${w[0]}</span><b class="pos">${w[1]}</b></div>`).join("")}</article>
+  <p class="rw-h">Activity</p><article class="rw-card">${coin.history.map(a=>`<div class="hist"><span>${a.t}<small>${a.d}</small></span><b class="${a.n>0?"pos":"neg"}">${a.n>0?"+":"−"}${fmt(Math.abs(a.n))}</b></div>`).join("")}</article>`;
+ }else{
+  h=`<p class="rw-h">Active promotions</p>`+promos.map(x=>`<article class="rw-card"><div class="promo-top" style="background:${x.bg}"><div class="rw-title">${x.title}</div><p class="rw-sub" style="color:#333">${x.sub}</p></div><div class="code-box"><code>${x.code}</code><button class="rw-btn ghost" data-ract="copy" data-code="${x.code}">Copy code</button></div><div class="rw-foot">${daysLeft(x.left)}</div><p class="rw-sub">${x.terms}</p></article>`).join("");
+ }
+ rwBody.innerHTML=h;
+}
+function showView(v){
+ const rw=v==="Rewards";
+ payView.hidden=rw;rewardsView.hidden=!rw;
+ document.querySelector(".brand h1").textContent=rw?"Rewards":"Pay Bills";
+ document.querySelectorAll(".nav-item").forEach(n=>n.classList.toggle("active",n.dataset.nav==="Rewards"&&rw));
+ if(rw)renderRewards();
+ window.scrollTo(0,0);
+}
+document.querySelectorAll("[data-rtab]").forEach(b=>b.addEventListener("click",()=>{rewardsTab=b.dataset.rtab;document.querySelectorAll("[data-rtab]").forEach(t=>{const a=t===b;t.classList.toggle("active",a);t.setAttribute("aria-selected",a)});renderRewards()}));
+rwBody.addEventListener("click",e=>{
+ const b=e.target.closest("[data-ract]");if(!b)return;
+ const act=b.dataset.ract,id=b.dataset.id;
+ if(act==="claim"){claimed.add(id);renderRewards();toast("Offer claimed. It will apply automatically.");const nb=rwBody.querySelector(`[data-id="${id}"]`);nb&&nb.focus()}
+ else if(act==="redeem"){
+  const x=redeemables.find(y=>y.id===id);if(!x||coin.balance<x.cost)return;
+  coin.balance-=x.cost;if(x.airtime)wallet.airtime+=x.airtime;
+  coin.history.unshift({t:"Redeemed "+x.title,d:"Today",n:-x.cost});renderRewards();toast(x.title+" redeemed.");
+ }else if(act==="copy"){try{navigator.clipboard.writeText(b.dataset.code).catch(()=>{})}catch(_){}toast("Code "+b.dataset.code+" copied.")}
 });
 renderNumbers();
 render();
