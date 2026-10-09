@@ -129,8 +129,8 @@ const plans = [
  {category:"Call & Message",name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",type:"Monthly Plan",validity:"30 Days",points:"2,500",status:"active",autoRenew:true},
  {category:"Call & Message",name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",type:"Weekly Plan",validity:"7 Days",points:"1,000",status:"exhausted"},
  {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",type:"Weekly Plan",validity:"7 Days",points:"300"},
- {category:"Devices",name:"FibreX",price:"₦20,000",type:"Monthly Plan",validity:"30 Days",points:"20,000",status:"active",autoRenew:true},
- {category:"Devices",name:"FlyX (ODU)",price:"₦35,000",type:"Monthly Plan",validity:"30 Days",points:"35,000",status:"expiring"}
+ {category:"Devices",name:"FibreX",price:"₦20,000",type:"50Mbps",validity:"30 Days",points:"20,000",status:"active",autoRenew:true},
+ {category:"Devices",name:"FlyX (ODU)",price:"₦35,000",type:"100Mbps",validity:"30 Days",points:"35,000",status:"expiring"}
 ];
 const SHARE_MAX=0.2;
 const shareText=item=>{const v=Math.round(item.qty*SHARE_MAX*10)/10;return "Share up to "+v+" "+item.unit};
