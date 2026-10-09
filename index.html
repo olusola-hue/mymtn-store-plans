@@ -154,6 +154,9 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .otp-box{width:40px;height:50px;border:1.5px solid #dcdde0;border-radius:12px;display:grid;place-items:center;font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
 .otp-box.filled{border-color:#171717}
 .resend{text-align:center;font-size:12px;color:#686868;margin:0 0 16px;min-height:32px;display:flex;align-items:center;justify-content:center;gap:4px}
+.sub-methods{display:grid;gap:6px;margin:-6px 0 14px 14px;padding-left:12px;border-left:2px solid var(--mtn-yellow)}
+.method.sub{padding:10px 12px;border-radius:12px}
+.ussd-code{margin:6px 0 4px;padding:16px;border-radius:14px;background:#fafafa;border:1px solid #ececec;text-align:center;font-size:24px;font-weight:700;letter-spacing:.5px;word-break:break-all}
 .card-form{margin:-4px 0 16px;padding:14px 14px 12px;border:1px solid #ececec;border-radius:14px;background:#fafafa}
 .field{margin-bottom:12px;flex:1;min-width:0}
 .field label{display:block;font-size:12px;font-weight:650;margin-bottom:6px;color:#444}
@@ -296,12 +299,14 @@ const allMethods=()=>[
  {id:"momo",name:"MoMo Wallet",sub:"Balance "+naira(wallet.momo),ok:wallet.momo>=priceOf(flow.item)},
  {id:"airtime",name:"Airtime",sub:"Balance "+naira(wallet.airtime),ok:wallet.airtime>=priceOf(flow.item)},
  ...savedCards.map(c=>({id:c.id,name:"Debit card",sub:"Card ending "+c.last4,ok:true})),
- {id:"new",name:"Use a new card",sub:"Enter card details",ok:true}];
+ {id:"others",name:"Others",sub:"Bank transfer, card or USSD",ok:true}];
+const otherOpts=[{id:"transfer",name:"Pay with Bank Transfer"},{id:"card",name:"Pay with Card"},{id:"ussd",name:"Pay with USSD"}];
+const newCardSel=()=>flow.method==="others"&&flow.other==="card";
 const methodOf=id=>allMethods().find(m=>m.id===id);
-const authType=()=>flow.method==="momo"?"bio":flow.method==="airtime"?"pin":"otp";
+const authType=()=>flow.method==="momo"?"bio":flow.method==="airtime"?"pin":flow.method==="others"?(flow.other==="transfer"?"transfer":flow.other==="ussd"?"ussd":"otp"):"otp";
 const clearTimers=()=>{clearTimeout(procTimer);clearTimeout(bioTimer);clearInterval(otpTimer)};
 function openCheckout(item,action,opener){
- flow={item,action,method:null,code:"",step:"review",card:{number:"",expiry:"",cvv:"",save:false,err:{}}};
+ flow={item,action,method:null,other:"transfer",code:"",step:"review",card:{number:"",expiry:"",cvv:"",save:false,err:{}}};
  const first=allMethods().find(m=>m.ok);flow.method=first?first.id:null;
  lastOpener=opener;sheetBackdrop.classList.add("open");appRoot.inert=true;document.body.style.overflow="hidden";showStep();
 }
@@ -339,7 +344,8 @@ function showStep(){
   <div class="sum-row"><span>Total</span><strong>${item.price}</strong></div></div>
   <p class="pay-title">Pay with</p>
   <div class="methods" role="radiogroup" aria-label="Payment method">${allMethods().map(m=>`<button class="method" role="radio" data-act="method" data-id="${m.id}" aria-checked="${f.method===m.id}"${m.ok?"":" disabled"}><span class="m-text"><b>${m.name}</b><small${m.ok?"":' class="bad"'}>${m.ok?m.sub:"Insufficient balance · "+m.sub.replace("Balance ","")}</small></span><span class="m-radio"></span></button>`).join("")}</div>
-  ${f.method==="new"?cardFormHtml():""}
+  ${f.method==="others"?`<div class="sub-methods" role="radiogroup" aria-label="Other ways to pay">${otherOpts.map(o=>`<button class="method sub" role="radio" data-act="other" data-id="${o.id}" aria-checked="${f.other===o.id}"><span class="m-text"><b>${o.name}</b></span><span class="m-radio"></span></button>`).join("")}</div>`:""}
+  ${newCardSel()?cardFormHtml():""}
   <button class="primary wide" data-act="pay"${f.method?"":" disabled"}>Pay ${item.price}</button>`;
  }else if(f.step==="bio"){
   html=`<div class="sheet-head"><button class="sheet-x" data-act="back" aria-label="Back">${ic.back}</button><h2 id="sheetTitle" tabindex="-1">Confirm payment</h2><span style="width:36px"></span></div>
@@ -361,6 +367,20 @@ function showStep(){
   <div class="resend" id="resend"></div>
   ${keypadHtml()}
   <p class="pin-hint">Prototype: any 6 digits work.</p>`;
+ }else if(f.step==="transfer"){
+  html=`<div class="sheet-head"><button class="sheet-x" data-act="back" aria-label="Back">${ic.back}</button><h2 id="sheetTitle" tabindex="-1">Pay with Bank Transfer</h2><span style="width:36px"></span></div>
+  <p class="pin-sub">Transfer exactly <b>${item.price}</b> to the account below. This account is valid for this payment only.</p>
+  <div class="summary"><div class="sum-row"><span>Bank</span><strong>Wema Bank</strong></div><div class="sum-row"><span>Account number</span><strong id="acctNo">${f.acct}</strong></div><div class="sum-row"><span>Account name</span><strong>MTN Nigeria – ${num.number}</strong></div><div class="sum-row"><span>Amount</span><strong>${item.price}</strong></div></div>
+  <div class="center"><button class="link-btn" data-act="copy">Copy account number</button></div>
+  <button class="primary wide" data-act="paid">I've made the transfer</button>
+  <p class="pin-hint">Prototype: tap the button to simulate the transfer arriving.</p>`;
+ }else if(f.step==="ussd"){
+  html=`<div class="sheet-head"><button class="sheet-x" data-act="back" aria-label="Back">${ic.back}</button><h2 id="sheetTitle" tabindex="-1">Pay with USSD</h2><span style="width:36px"></span></div>
+  <p class="pin-sub">Dial this code from the phone registered with your bank, then follow the prompts to pay <b>${item.price}</b>.</p>
+  <div class="ussd-code" aria-label="USSD code">${f.ussd}</div>
+  <div class="center"><button class="link-btn" data-act="copy">Copy code</button></div>
+  <button class="primary wide" data-act="paid">I've completed the payment</button>
+  <p class="pin-hint">Prototype: tap the button to simulate the payment being confirmed.</p>`;
  }else if(f.step==="proc"){
   html=`<div class="proc" role="status"><div class="spinner" aria-hidden="true"></div><p>Processing your payment…</p></div>`;
  }else{
@@ -411,7 +431,9 @@ function finishPayment(){
  const f=flow,item=f.item,price=priceOf(item);
  if(f.method==="momo"||f.method==="airtime")wallet[f.method]-=price;
  let paid=methodOf(f.method).name;
- if(f.method==="new"){
+ if(f.method==="others"&&f.other==="transfer")paid="Bank transfer";
+ else if(f.method==="others"&&f.other==="ussd")paid="USSD";
+ else if(f.method==="others"){
   const last4=f.card.number.replace(/\D/g,"").slice(-4);
   paid="Debit card ending "+last4;
   if(f.card.save&&!savedCards.some(c=>c.last4===last4))savedCards.push({id:"card:"+last4,last4});
@@ -430,14 +452,20 @@ sheetBody.addEventListener("click",e=>{
  if(act==="close"||act==="done")closeCheckout();
  else if(act==="method"){flow.method=a.dataset.id;showStep();const sel=sheetBody.querySelector('.method[aria-checked="true"]');sel&&sel.focus()}
  else if(act==="pay"&&flow.method){
-  if(flow.method==="new"){
+  if(newCardSel()){
    flow.card.err=validateCard();
    const bad=Object.keys(flow.card.err);
    if(bad.length){showStep();const id={number:"cfNum",expiry:"cfExp",cvv:"cfCvv"}[bad[0]];document.getElementById(id).focus();return}
   }
-  flow.step=authType();flow.code="";flow.sent=false;showStep();
+  flow.step=authType();flow.code="";flow.sent=false;
+  if(flow.step==="transfer")flow.acct=String(Math.floor(Math.random()*9e9)+1e9);
+  if(flow.step==="ussd")flow.ussd="*555*"+priceOf(flow.item)+"*"+String(Math.floor(Math.random()*9e5)+1e5)+"#";
+  showStep();
  }
  else if(act==="back"){clearTimeout(bioTimer);flow.step="review";flow.code="";showStep()}
+ else if(act==="other"){flow.other=a.dataset.id;showStep();const sel=sheetBody.querySelector('.method.sub[aria-checked="true"]');sel&&sel.focus()}
+ else if(act==="paid")startProcessing();
+ else if(act==="copy"){const t=flow.step==="ussd"?flow.ussd:flow.acct;try{navigator.clipboard.writeText(t)}catch(_){}a.textContent="Copied"}
  else if(act==="bio")runBio();
  else if(act==="usepin"){clearTimeout(bioTimer);flow.step="pin";flow.code="";showStep()}
  else if(act==="resend"){flow.code="";flow.sent=true;updateCode();startOtpTimer();}
