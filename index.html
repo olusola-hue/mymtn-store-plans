@@ -62,6 +62,8 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .plan-card.open .pay-panel{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .22s ease,visibility 0s}
 .pay-inner{overflow:hidden;min-height:0;padding:0 16px}
 .pay-btn{width:100%;padding:13px;margin-bottom:16px}
+.pay-btn:disabled{background:#eee;color:#8a8d93;cursor:not-allowed;margin-bottom:8px}
+.stack-note{margin:0 0 16px;font-size:11px;color:#6e7177;line-height:1.45;text-align:center}
 .card-meta{display:flex;align-items:center;justify-content:space-between;padding:2px 16px 16px;gap:8px}
 .meta-left{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .meta{display:flex;gap:5px;align-items:center;color:#5f6268;font-size:11px}
@@ -285,8 +287,9 @@ function render(){
    const st=statusLabels[item.status];
    const ribbon=st?`<div class="status-row"><span class="ribbon ${item.status}">${st}</span></div>`:"";
    const action=(item.status==="active"||item.status==="expiring")?"Stack Plan":(item.status==="expired"||item.status==="exhausted")?"Renew Plan":null;
+   const locked=action==="Stack Plan"&&item.category==="Internet"&&item.stackAdded&&item.left>item.stackAdded;
    const chev=action?'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>':"";
-   el.innerHTML=`${ribbon}<div class="card-top"${action?' tabindex="0" role="button" aria-expanded="false"':""}><div><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div><div class="price${action?" has-chev":""}">${item.price}${chev}</div></div><div class="card-meta"><div class="meta-left"><span class="meta${item.left<7?" low":""}">${icon("calendar")} ${daysText(item.left)}</span>${item.category==="Internet"&&item.qty?`<span class="meta">${icon("share")} ${shareText(item)}</span>`:""}</div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}${action?`<div class="pay-panel"><div class="pay-inner"><button class="primary pay-btn">${action}</button></div></div>`:""}`;
+   el.innerHTML=`${ribbon}<div class="card-top"${action?' tabindex="0" role="button" aria-expanded="false"':""}><div><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div><div class="price${action?" has-chev":""}">${item.price}${chev}</div></div><div class="card-meta"><div class="meta-left"><span class="meta${item.left<7?" low":""}">${icon("calendar")} ${daysText(item.left)}</span>${item.category==="Internet"&&item.qty?`<span class="meta">${icon("share")} ${shareText(item)}</span>`:""}</div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}${action?`<div class="pay-panel"><div class="pay-inner"><button class="primary pay-btn"${locked?" disabled":""}>${action}</button>${locked?`<p class="stack-note" role="note">One extension at a time. You can stack again once your added ${daysText(item.stackAdded)} start.</p>`:""}</div></div>`:""}`;
    const sw=el.querySelector(".switch");
    sw.addEventListener("click",()=>{item.autoRenew=!item.autoRenew;sw.setAttribute("aria-checked",item.autoRenew);toast("Auto-renewal turned "+(item.autoRenew?"on":"off")+" for "+item.name+".")});
    if(action){
@@ -295,7 +298,7 @@ function render(){
     const toggleCard=()=>{const open=el.classList.toggle("open");top.setAttribute("aria-expanded",open)};
     el.addEventListener("click",e=>{if(e.target.closest(".renew,.pay-panel"))return;toggleCard()});
     top.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggleCard()}});
-    const payBtn=el.querySelector(".pay-btn");payBtn.addEventListener("click",()=>openCheckout(item,action,payBtn));
+    const payBtn=el.querySelector(".pay-btn");payBtn.addEventListener("click",()=>{if(!payBtn.disabled)openCheckout(item,action,payBtn)});
    }
   cards.appendChild(el);
  });
@@ -484,6 +487,7 @@ function finishPayment(){
   if(f.card.save&&!savedCards.some(c=>c.last4===last4))savedCards.push({id:"card:"+last4,last4});
  }else if(f.method.startsWith("card:")){paid="Debit card ending "+f.method.slice(5)}
  f.paidWith=paid;
+ if(f.action==="Stack Plan"&&item.category==="Internet"&&item.left>0)item.stackAdded=item.term;
  item.left+=item.term;item.status="active";
  f.ref="MTN"+String(Math.floor(Math.random()*1e9)).padStart(9,"0");
  f.when=new Date().toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
