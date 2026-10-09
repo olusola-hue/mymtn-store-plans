@@ -16,8 +16,6 @@ button{cursor:pointer}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 16px}
 .brand{display:flex;align-items:center;gap:10px}
 h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
-.icon-btn{width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:white;display:grid;place-items:center;position:relative;color:#222}
-.icon-btn svg{width:20px;height:20px}
 .num-switch{position:relative}
 .num-btn{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px 0 14px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:13px;font-weight:750;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
 .num-btn:focus-visible,.num-opt:focus-visible{outline:2px solid #171717;outline-offset:2px}
@@ -91,13 +89,60 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .store-label{font-size:10px;font-weight:800;margin-bottom:-1px;color:#111}
 .toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,15px);opacity:0;pointer-events:none;background:#191919;color:white;padding:12px 16px;border-radius:12px;font-size:12px;z-index:9;transition:.22s;max-width:calc(100% - 36px);text-align:center;box-shadow:0 5px 20px #0002}
 .toast.show{opacity:1;transform:translate(-50%,0)}
-.modal-backdrop{position:fixed;inset:0;background:#0005;display:none;align-items:flex-end;justify-content:center;z-index:10}
-.modal-backdrop.open{display:flex}
-.modal{width:min(460px,100%);background:white;border-radius:22px 22px 0 0;padding:24px 22px 32px;box-shadow:0 -8px 30px #0002}
-.modal h2{font-size:20px;margin:0 0 8px}
-.modal p{font-size:13px;line-height:1.55;color:#686868;margin:0 0 20px}
-.modal-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid #eee;font-size:13px}
-.modal .primary{width:100%;margin-top:12px;padding:14px}
+.sheet-backdrop{position:fixed;inset:0;background:#0006;display:none;align-items:flex-end;justify-content:center;z-index:10}
+.sheet-backdrop.open{display:flex}
+.sheet{width:min(460px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px 22px 0 0;padding:10px 20px 24px;box-shadow:0 -8px 30px #0002;animation:sheetUp .22s ease}
+@keyframes sheetUp{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+.sheet-grab{width:38px;height:4px;border-radius:4px;background:#e2e2e2;margin:0 auto 12px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;min-height:36px}
+.sheet-head h2{margin:0;font-size:19px}
+.sheet-head h2:focus{outline:none}
+.sheet-x{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:#fff;display:grid;place-items:center;color:#222;flex-shrink:0}
+.sheet-x svg{width:18px;height:18px}
+.sheet button:focus-visible{outline:2px solid #171717;outline-offset:2px}
+.summary{border:1px solid #ececec;border-radius:16px;padding:14px 16px;margin-bottom:16px}
+.sum-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding-bottom:12px;border-bottom:1px solid #f0f0f0}
+.sum-name{font-size:22px;font-weight:850;letter-spacing:-.5px;overflow-wrap:anywhere}
+.sum-type{font-size:12px;color:#777;margin-top:4px}
+.sum-price{font-size:19px;font-weight:800;white-space:nowrap}
+.sum-row{display:flex;justify-content:space-between;gap:12px;padding-top:10px;font-size:13px}
+.sum-row span{color:#686868}
+.sum-row strong{text-align:right}
+.pay-title{font-size:13px;font-weight:750;margin:0 0 8px}
+.methods{display:grid;gap:8px;margin-bottom:16px}
+.method{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:1.5px solid #e6e6e6;border-radius:14px;background:#fff;text-align:left;color:var(--ink)}
+.method[aria-checked="true"]{border-color:var(--mtn-yellow);background:#fffbe6}
+.method:disabled{opacity:.55;cursor:not-allowed}
+.m-text{flex:1;min-width:0}
+.m-text b{display:block;font-size:14px}
+.m-text small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.m-text small.bad{color:#b3261e}
+.m-radio{width:20px;height:20px;border-radius:50%;border:2px solid #cfd1d4;flex-shrink:0;display:grid;place-items:center}
+.method[aria-checked="true"] .m-radio{border-color:#171717}
+.method[aria-checked="true"] .m-radio::after{content:"";width:10px;height:10px;border-radius:50%;background:#171717}
+.sheet .primary.wide{width:100%;padding:14px}
+.sheet .primary:disabled{background:#ececec;color:#9a9a9a;cursor:not-allowed}
+.pin-sub{margin:0 0 18px;font-size:13px;color:#686868;line-height:1.5;text-align:center}
+.pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:22px}
+.pin-dots span{width:14px;height:14px;border-radius:50%;border:2px solid #cfd1d4}
+.pin-dots span.on{background:#171717;border-color:#171717}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:300px;margin:0 auto}
+.key{height:56px;border:0;border-radius:14px;background:#f5f5f6;font-size:22px;font-weight:700;color:var(--ink)}
+.key:active{background:#ebebec}
+.key.ghost{visibility:hidden}
+.key svg{width:24px;height:24px}
+.pin-hint{text-align:center;font-size:11px;color:#9a9a9a;margin:16px 0 0}
+.proc{padding:40px 0 34px;text-align:center}
+.spinner{width:44px;height:44px;border-radius:50%;border:4px solid #f0f0f0;border-top-color:#171717;margin:0 auto 18px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc p{margin:0;font-size:14px;color:#555}
+.done-ic{width:64px;height:64px;border-radius:50%;background:#e3f4ea;color:var(--green);display:grid;place-items:center;margin:8px auto 14px}
+.done-ic svg{width:32px;height:32px}
+.done-title{text-align:center;font-size:20px;font-weight:800;margin:0 0 6px}
+.done-title:focus{outline:none}
+.done-sub{text-align:center;font-size:13px;color:#686868;line-height:1.55;margin:0 0 18px}
+.receipt{border:1px dashed #d9d9d9;border-radius:16px;padding:2px 16px 12px;margin-bottom:16px}
+@media(prefers-reduced-motion:reduce){.sheet{animation:none}.spinner{animation-duration:2.4s}}
 .disclaimer{padding:20px 22px 0;color:#9a9a9a;font-size:10px;line-height:1.5}
 @media(min-width:600px){body{background:#f6f6f6;padding:20px 0}.app{border-radius:24px;box-shadow:0 8px 40px #0000;overflow:hidden;min-height:calc(100vh - 40px)}.bottom-nav{bottom:20px;border-radius:22px}.toast{bottom:116px}}
 </style>
@@ -130,7 +175,7 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
   </nav>
 </div>
 <div class="toast" id="toast" role="status"></div>
-<div class="modal-backdrop" id="modalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle">Plan details</h2><p id="modalDescription"></p><div class="modal-row"><span>Validity</span><strong id="modalValidity">—</strong></div><div class="modal-row"><span>Reward points</span><strong id="modalPoints">—</strong></div><div class="modal-row"><span>Price</span><strong id="modalPrice">—</strong></div><button class="primary" id="modalContinue">Continue</button><button class="icon-btn" id="modalClose" style="width:100%;border-radius:10px;margin-top:8px">Close</button></section></div>
+<div class="sheet-backdrop" id="sheetBackdrop"><section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"><div class="sheet-grab"></div><div id="sheetBody"></div></section></div>
 <script>
 const plans = [
  {category:"Internet",lines:["primary"],name:"30 GB",qty:30,unit:"GB",price:"₦10,000",type:"Monthly Plan",validity:"30 Days",points:"40,055",status:"active",autoRenew:true},
@@ -155,7 +200,7 @@ const plans = [
 const SHARE_MAX=0.2;
 const shareText=item=>{const v=Math.round(item.qty*SHARE_MAX*10)/10;return "Share up to "+v+" "+item.unit};
 const statusLabels={active:"ACTIVE",expiring:"EXPIRING SOON",expired:"EXPIRED",exhausted:"EXHAUSTED"};
-let currentCategory="Internet",selected=null;
+let currentCategory="Internet";
 const cards=document.getElementById("cards"), searchInput=document.getElementById("searchInput");
 const icon=(type)=> type==="share" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.8 7.4-4.4M8.3 13.2l7.4 4.4"/></svg>' : type==="calendar" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 7.8 7.5 9.5 4.3-1.7 7.5-5 7.5-9.5V6z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg>';
 function render(){
@@ -180,28 +225,14 @@ function render(){
     const toggleCard=()=>{const open=el.classList.toggle("open");top.setAttribute("aria-expanded",open)};
     el.addEventListener("click",e=>{if(e.target.closest(".renew,.pay-panel"))return;toggleCard()});
     top.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggleCard()}});
-    el.querySelector(".pay-btn").addEventListener("click",()=>toast(action+" for "+item.name+" is a prototype placeholder."));
+    const payBtn=el.querySelector(".pay-btn");payBtn.addEventListener("click",()=>openCheckout(item,action,payBtn));
    }
   cards.appendChild(el);
  });
 }
-function openModal(item,isDevice){
- selected=item;
- document.getElementById("modalTitle").textContent=isDevice?item.name:item.name+" bundle";
- document.getElementById("modalDescription").textContent=isDevice?item.desc+" — this is a concept offer. Availability and pricing would be confirmed by MTN.":item.type+". This prototype uses illustrative offer details; check the official MTN app for current pricing and eligibility.";
- document.getElementById("modalValidity").textContent=isDevice?"Enquire for details":item.validity;
- document.getElementById("modalPoints").textContent=isDevice?"—":item.points+" points";
- document.getElementById("modalPrice").textContent=isDevice?"View offer":item.price;
- document.getElementById("modalContinue").textContent=isDevice?"Enquire about device":"Continue";
- document.getElementById("modalBackdrop").classList.add("open");
-}
-function closeModal(){document.getElementById("modalBackdrop").classList.remove("open")}
 document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{currentCategory=btn.dataset.category;document.querySelectorAll(".tab").forEach(t=>{let active=t===btn;t.classList.toggle("active",active);t.setAttribute("aria-selected",active)});render()}));
 searchInput.addEventListener("input",render);
 document.querySelectorAll("[data-nav]").forEach(btn=>btn.addEventListener("click",()=>{const dest=btn.dataset.nav;if(dest==="Pay"){toast("You're already in Pay.");return}toast(dest+" navigation is a prototype placeholder.")}));
-document.getElementById("modalClose").addEventListener("click",closeModal);
-document.getElementById("modalBackdrop").addEventListener("click",e=>{if(e.target.id==="modalBackdrop")closeModal()});
-document.getElementById("modalContinue").addEventListener("click",()=>{closeModal();toast(selected&&selected.category==="Devices"?"Device enquiry is a prototype placeholder.":"Plan purchase is a prototype placeholder.")});
 let toastTimer;
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2800)}
 const numbers=[
@@ -224,6 +255,96 @@ numMenu.addEventListener("click",e=>{const b=e.target.closest(".num-opt");if(!b)
 numMenu.addEventListener("keydown",e=>{const opts=[...numMenu.querySelectorAll(".num-opt")],i=opts.indexOf(document.activeElement);if(e.key==="ArrowDown"){e.preventDefault();opts[(i+1)%opts.length].focus()}else if(e.key==="ArrowUp"){e.preventDefault();opts[(i-1+opts.length)%opts.length].focus()}});
 document.addEventListener("click",e=>{if(!numMenu.hidden&&!e.target.closest(".num-switch"))setNumMenu(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!numMenu.hidden){setNumMenu(false);numBtn.focus()}});
+
+/* ---------- Checkout: review -> PIN -> processing -> receipt ---------- */
+const wallet={momo:50000,airtime:1200};
+const payMethods=[{id:"momo",name:"MoMo Wallet"},{id:"airtime",name:"Airtime"},{id:"card",name:"Debit card",sub:"Card ending 4242"}];
+const priceOf=item=>Number(String(item.price).replace(/[^\d]/g,""));
+const naira=n=>"₦"+n.toLocaleString("en-NG");
+const sheetBackdrop=document.getElementById("sheetBackdrop"),sheetBody=document.getElementById("sheetBody");
+const appRoot=document.querySelector(".app");
+const ic={x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+ back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+ del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 5H9l-6 7 6 7h12z"/><path d="m13 9 4 6M17 9l-4 6"/></svg>',
+ ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>'};
+let flow=null,lastOpener=null,procTimer=null;
+const methodOk=m=>m.id==="card"||wallet[m.id]>=priceOf(flow.item);
+const methodOf=id=>payMethods.find(m=>m.id===id);
+function openCheckout(item,action,opener){
+ flow={item,action,method:null,pin:"",step:"review"};
+ const first=payMethods.find(methodOk);flow.method=first?first.id:null;
+ lastOpener=opener;sheetBackdrop.classList.add("open");appRoot.inert=true;document.body.style.overflow="hidden";showStep();
+}
+function closeCheckout(){
+ clearTimeout(procTimer);flow=null;sheetBackdrop.classList.remove("open");appRoot.inert=false;document.body.style.overflow="";
+ if(lastOpener&&document.contains(lastOpener))lastOpener.focus();
+}
+function showStep(){
+ const f=flow,item=f.item,num=numbers[activeNumber],price=priceOf(item),stack=f.action==="Stack Plan";
+ let html="";
+ if(f.step==="review"){
+  html=`<div class="sheet-head"><h2 id="sheetTitle" tabindex="-1">${f.action}</h2><button class="sheet-x" data-act="close" aria-label="Close">${ic.x}</button></div>
+  <div class="summary"><div class="sum-top"><div><div class="sum-name">${item.name}</div><div class="sum-type">${item.type}</div></div><div class="sum-price">${item.price}</div></div>
+  <div class="sum-row"><span>Number</span><strong>${num.number}${num.dedicated?" · "+num.label:""}</strong></div>
+  <div class="sum-row"><span>Validity</span><strong>${item.validity}</strong></div>
+  <div class="sum-row"><span>Starts</span><strong>${stack?"When your current plan ends":"Immediately"}</strong></div>
+  <div class="sum-row"><span>Total</span><strong>${item.price}</strong></div></div>
+  <p class="pay-title">Pay with</p>
+  <div class="methods" role="radiogroup" aria-label="Payment method">${payMethods.map(m=>{const ok=methodOk(m);const sub=m.sub||("Balance "+naira(wallet[m.id]));return `<button class="method" role="radio" data-act="method" data-id="${m.id}" aria-checked="${f.method===m.id}"${ok?"":" disabled"}><span class="m-text"><b>${m.name}</b><small${ok?"":' class="bad"'}>${ok?sub:"Insufficient balance · "+sub.replace("Balance ","")}</small></span><span class="m-radio"></span></button>`}).join("")}</div>
+  <button class="primary wide" data-act="pay"${f.method?"":" disabled"}>Pay ${item.price}</button>`;
+ }else if(f.step==="pin"){
+  const m=methodOf(f.method);
+  html=`<div class="sheet-head"><button class="sheet-x" data-act="back" aria-label="Back">${ic.back}</button><h2 id="sheetTitle" tabindex="-1">Enter your PIN</h2><span style="width:36px"></span></div>
+  <p class="pin-sub">Confirm payment of <b>${item.price}</b> from ${m.name}.</p>
+  <div class="pin-dots" id="pinDots" role="img" aria-label="0 of 4 digits entered"><span></span><span></span><span></span><span></span></div>
+  <div class="keypad">${[1,2,3,4,5,6,7,8,9].map(k=>`<button class="key" data-key="${k}">${k}</button>`).join("")}<span class="key ghost" aria-hidden="true"></span><button class="key" data-key="0">0</button><button class="key" data-key="back" aria-label="Delete">${ic.del}</button></div>
+  <p class="pin-hint">Prototype: any 4 digits work.</p>`;
+ }else if(f.step==="proc"){
+  html=`<div class="proc" role="status"><div class="spinner" aria-hidden="true"></div><p>Processing your payment…</p></div>`;
+ }else{
+  const m=methodOf(f.method);
+  html=`<div class="done-ic">${ic.ok}</div><h2 class="done-title" id="sheetTitle" tabindex="-1">${stack?"Plan stacked":"Plan renewed"}</h2>
+  <p class="done-sub">${stack?`Your new ${item.name} bundle starts when your current plan ends.`:`Your ${item.name} plan is active again for ${item.validity}.`}</p>
+  <div class="receipt"><div class="sum-row"><span>Reference</span><strong>${f.ref}</strong></div><div class="sum-row"><span>Date</span><strong>${f.when}</strong></div><div class="sum-row"><span>Number</span><strong>${num.number}</strong></div><div class="sum-row"><span>Plan</span><strong>${item.name} · ${item.type}</strong></div><div class="sum-row"><span>Paid with</span><strong>${m.name}</strong></div><div class="sum-row"><span>Amount paid</span><strong>${item.price}</strong></div></div>
+  <button class="primary wide" data-act="done">Done</button>`;
+ }
+ sheetBody.innerHTML=html;
+ const h=document.getElementById("sheetTitle");if(h)h.focus();
+}
+function updatePinDots(){
+ const dots=document.querySelectorAll("#pinDots span");dots.forEach((d,i)=>d.classList.toggle("on",i<flow.pin.length));
+ document.getElementById("pinDots").setAttribute("aria-label",flow.pin.length+" of 4 digits entered");
+}
+function pressKey(k){
+ if(!flow||flow.step!=="pin")return;
+ if(k==="back")flow.pin=flow.pin.slice(0,-1);else if(flow.pin.length<4)flow.pin+=k;
+ updatePinDots();
+ if(flow.pin.length===4)setTimeout(()=>{if(flow&&flow.step==="pin"){flow.step="proc";showStep();procTimer=setTimeout(finishPayment,1600)}},180);
+}
+function finishPayment(){
+ const f=flow,item=f.item,price=priceOf(item);
+ if(f.method!=="card")wallet[f.method]-=price;
+ item.status="active";
+ f.ref="MTN"+String(Math.floor(Math.random()*1e9)).padStart(9,"0");
+ f.when=new Date().toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+ f.step="done";showStep();render();
+}
+sheetBody.addEventListener("click",e=>{
+ if(!flow)return;
+ const k=e.target.closest("[data-key]");if(k){pressKey(k.dataset.key);return}
+ const a=e.target.closest("[data-act]");if(!a)return;
+ const act=a.dataset.act;
+ if(act==="close"||act==="done")closeCheckout();
+ else if(act==="method"){flow.method=a.dataset.id;showStep();const sel=sheetBody.querySelector('.method[aria-checked="true"]');sel&&sel.focus()}
+ else if(act==="pay"&&flow.method){flow.step="pin";flow.pin="";showStep()}
+ else if(act==="back"){flow.step="review";flow.pin="";showStep()}
+});
+sheetBackdrop.addEventListener("click",e=>{if(e.target===sheetBackdrop&&flow&&flow.step!=="proc")closeCheckout()});
+document.addEventListener("keydown",e=>{
+ if(!flow)return;
+ if(e.key==="Escape"&&flow.step!=="proc"){closeCheckout();return}
+ if(flow.step==="pin"){if(/^[0-9]$/.test(e.key)){e.preventDefault();pressKey(e.key)}else if(e.key==="Backspace"){e.preventDefault();pressKey("back")}}
+});
 renderNumbers();
 render();
 </script>
