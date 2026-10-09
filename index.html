@@ -118,12 +118,12 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 <div class="modal-backdrop" id="modalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle">Plan details</h2><p id="modalDescription"></p><div class="modal-row"><span>Validity</span><strong id="modalValidity">—</strong></div><div class="modal-row"><span>Reward points</span><strong id="modalPoints">—</strong></div><div class="modal-row"><span>Price</span><strong id="modalPrice">—</strong></div><button class="primary" id="modalContinue">Continue</button><button class="icon-btn" id="modalClose" style="width:100%;border-radius:10px;margin-top:8px">Close</button></section></div>
 <script>
 const plans = [
- {category:"Internet",name:"30 GB",price:"₦10,000",desc:"Stay connected for longer",validity:"30 Days",points:"40,055",status:"active"},
- {category:"Internet",name:"15 GB",price:"₦5,000",desc:"Everyday data bundle",validity:"20 Days",points:"10,500",status:"expiring"},
- {category:"Internet",name:"5 GB",price:"₦1,500",desc:"Great for everyday browsing",validity:"7 Days",points:"2,500",status:"expired"},
- {category:"Call & Message",name:"200 Minutes",price:"₦2,500",desc:"Voice bundle",validity:"30 Days",points:"2,500",status:"active"},
- {category:"Call & Message",name:"100 Minutes",price:"₦1,000",desc:"Voice bundle",validity:"7 Days",points:"1,000"},
- {category:"Call & Message",name:"50 SMS",price:"₦300",desc:"SMS bundle",validity:"7 Days",points:"300"}
+ {category:"Internet",name:"30 GB",qty:30,unit:"GB",price:"₦10,000",desc:"Stay connected for longer",validity:"30 Days",points:"40,055",status:"active"},
+ {category:"Internet",name:"15 GB",qty:15,unit:"GB",price:"₦5,000",desc:"Everyday data bundle",validity:"20 Days",points:"10,500",status:"expiring"},
+ {category:"Internet",name:"5 GB",qty:5,unit:"GB",price:"₦1,500",desc:"Great for everyday browsing",validity:"7 Days",points:"2,500",status:"expired"},
+ {category:"Call & Message",name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",desc:"Voice bundle",validity:"30 Days",points:"2,500",status:"active"},
+ {category:"Call & Message",name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",desc:"Voice bundle",validity:"7 Days",points:"1,000"},
+ {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",desc:"SMS bundle",validity:"7 Days",points:"300"}
 ];
 const devices=[
  {category:"Devices",name:"4G MiFi",desc:"Portable internet connectivity",icon:"mifi"},
@@ -131,10 +131,12 @@ const devices=[
  {category:"Devices",name:"FibreX",desc:"Fibre broadband for home and business",icon:"fibre"},
  {category:"Devices",name:"FlyX (ODU)",desc:"Outdoor wireless broadband connectivity",icon:"flyx"}
 ];
+const SHARE_MAX=0.2;
+const shareText=item=>{const v=Math.round(item.qty*SHARE_MAX*10)/10;return "Share up to "+v+" "+item.unit};
 const statusLabels={active:"ACTIVE",expiring:"EXPIRING SOON",expired:"EXPIRED"};
 let currentCategory="Internet",selected=null;
 const cards=document.getElementById("cards"), searchInput=document.getElementById("searchInput");
-const icon=(type)=> type==="calendar" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 7.8 7.5 9.5 4.3-1.7 7.5-5 7.5-9.5V6z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg>';
+const icon=(type)=> type==="share" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.8 7.4-4.4M8.3 13.2l7.4 4.4"/></svg>' : type==="calendar" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 7.8 7.5 9.5 4.3-1.7 7.5-5 7.5-9.5V6z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg>';
 function deviceSvg(type){
  if(type==="mifi")return '<svg viewBox="0 0 48 48"><rect x="12" y="4" width="24" height="40" rx="5"/><path d="M19 10h10M21 37h6"/><circle cx="24" cy="31" r="1.5"/></svg>';
  if(type==="router")return '<svg viewBox="0 0 48 48"><path d="M9 25V11M39 25V11M6 25h36v15H6zM17 32h2M24 32h2M31 32h2"/><path d="M15 17a13 13 0 0 1 18 0M19 21a7 7 0 0 1 10 0"/></svg>';
@@ -156,7 +158,7 @@ function render(){
   }else{
    const st=statusLabels[item.status];
    const ribbon=st?`<div class="status-row"><span class="ribbon ${item.status}">${st}</span></div>`:"";
-   el.innerHTML=`${ribbon}<div class="card-top"><div><div class="allowance">${item.name}</div><div class="description">${item.desc}</div></div><div class="price">${item.price}<small>incl. applicable taxes</small></div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("shield")} Bundle</span></div><span class="points"><b>★</b> ${item.points} pts</span></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}<div class="card-action"><span class="fineprint">Tap to view bundle details</span><button class="primary">Select plan</button></div>`;
+   el.innerHTML=`${ribbon}<div class="card-top"><div><div class="allowance">${item.name}</div><div class="description">${item.desc}</div></div><div class="price">${item.price}<small>incl. applicable taxes</small></div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("share")} ${shareText(item)}</span></div><span class="points"><b>★</b> ${item.points} pts</span></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}<div class="card-action"><span class="fineprint">Tap to view bundle details</span><button class="primary">Select plan</button></div>`;
    el.querySelector(".primary").addEventListener("click",()=>openModal(item,false));
   }
   cards.appendChild(el);
