@@ -38,10 +38,13 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .description{color:#777;font-size:12px;margin-top:7px}
 .price{font-size:19px;font-weight:800;white-space:nowrap;text-align:right}
 .price small{display:block;font-size:11px;color:#777;font-weight:500;margin-top:3px}
-.ribbon{position:absolute;top:0;left:0;background:var(--mtn-yellow);font-size:9px;font-weight:900;letter-spacing:.5px;padding:5px 10px 5px 16px;border-radius:0 0 9px 0}
-.ribbon.popular{background:#171717;color:white}
-.ribbon.only{background:#fff1a6}
-.card-top.has-ribbon{padding-top:30px}
+.status-row{display:flex;justify-content:flex-end}
+.ribbon{font-size:9px;font-weight:900;letter-spacing:.5px;padding:5px 14px 5px 10px;border-radius:0 0 0 9px;white-space:nowrap}
+.ribbon.active{background:#e3f4ea;color:#11663a}
+.ribbon.expiring{background:#ffe9bf;color:#8a5200}
+.ribbon.expired{background:#fde4e4;color:#b3261e}
+.status-row + .card-top{padding-top:12px}
+.card-top > div:first-child{min-width:0;overflow-wrap:anywhere}
 .card-meta{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid #f0f0f0;background:#fdfdfd;gap:8px}
 .meta-left{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .meta{display:flex;gap:5px;align-items:center;color:#5f6268;font-size:11px}
@@ -115,13 +118,13 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 <div class="modal-backdrop" id="modalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle">Plan details</h2><p id="modalDescription"></p><div class="modal-row"><span>Validity</span><strong id="modalValidity">—</strong></div><div class="modal-row"><span>Reward points</span><strong id="modalPoints">—</strong></div><div class="modal-row"><span>Price</span><strong id="modalPrice">—</strong></div><button class="primary" id="modalContinue">Continue</button><button class="icon-btn" id="modalClose" style="width:100%;border-radius:10px;margin-top:8px">Close</button></section></div>
 <script>
 const plans = [
- {category:"Internet",name:"25 GB + 200 Min",price:"₦7,500",desc:"Limited-time bundle",validity:"20 Days",points:"25,700",badge:"ONLY FOR YOU",badgeType:"only",timer:"12h : 18m"},
- {category:"Internet",name:"30 GB",price:"₦10,000",desc:"Stay connected for longer",validity:"30 Days",points:"40,055",badge:"POPULAR",badgeType:"popular",timer:"10h : 15m"},
- {category:"Internet",name:"50 GB+",price:"₦15,000",desc:"Limited-time bundle",validity:"30 Days",points:"25,700",badge:"ONLY FOR YOU",badgeType:"only",timer:"12h : 18m"},
- {category:"Internet",name:"15 GB",price:"₦5,000",desc:"Everyday data bundle",validity:"20 Days",points:"10,500",timer:"10h : 15m"},
+ {category:"Internet",name:"25 GB + 200 Min",price:"₦7,500",desc:"Limited-time bundle",validity:"20 Days",points:"25,700",timer:"12h : 18m"},
+ {category:"Internet",name:"30 GB",price:"₦10,000",desc:"Stay connected for longer",validity:"30 Days",points:"40,055",status:"active"},
+ {category:"Internet",name:"50 GB+",price:"₦15,000",desc:"Limited-time bundle",validity:"30 Days",points:"25,700",timer:"12h : 18m"},
+ {category:"Internet",name:"15 GB",price:"₦5,000",desc:"Everyday data bundle",validity:"20 Days",points:"10,500",status:"expiring"},
  {category:"Internet",name:"10 GB",price:"₦3,500",desc:"Your data, your way",validity:"20 Days",points:"5,000",timer:"10h : 15m"},
- {category:"Internet",name:"5 GB",price:"₦1,500",desc:"Great for everyday browsing",validity:"7 Days",points:"2,500"},
- {category:"Call & Message",name:"200 Minutes",price:"₦2,500",desc:"Voice bundle",validity:"30 Days",points:"2,500",badge:"POPULAR",badgeType:"popular"},
+ {category:"Internet",name:"5 GB",price:"₦1,500",desc:"Great for everyday browsing",validity:"7 Days",points:"2,500",status:"expired"},
+ {category:"Call & Message",name:"200 Minutes",price:"₦2,500",desc:"Voice bundle",validity:"30 Days",points:"2,500",status:"active"},
  {category:"Call & Message",name:"100 Minutes",price:"₦1,000",desc:"Voice bundle",validity:"7 Days",points:"1,000"},
  {category:"Call & Message",name:"50 SMS",price:"₦300",desc:"SMS bundle",validity:"7 Days",points:"300"}
 ];
@@ -131,6 +134,7 @@ const devices=[
  {category:"Devices",name:"FibreX",desc:"Fibre broadband for home and business",icon:"fibre"},
  {category:"Devices",name:"FlyX (ODU)",desc:"Outdoor wireless broadband connectivity",icon:"flyx"}
 ];
+const statusLabels={active:"ACTIVE",expiring:"EXPIRING SOON",expired:"EXPIRED"};
 let currentCategory="Internet",selected=null;
 const cards=document.getElementById("cards"), searchInput=document.getElementById("searchInput");
 const icon=(type)=> type==="calendar" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 7.8 7.5 9.5 4.3-1.7 7.5-5 7.5-9.5V6z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg>';
@@ -153,8 +157,9 @@ function render(){
    el.innerHTML=`<div class="device-card"><div class="device-art">${deviceSvg(item.icon)}</div><div class="device-info"><h3>${item.name}</h3><p>${item.desc}</p></div></div><div class="device-bottom"><span class="offer">Pricing available on enquiry</span><button class="primary" data-action="details">View offer</button></div>`;
    el.querySelector("button").addEventListener("click",()=>openModal(item,true));
   }else{
-   const ribbon=item.badge?`<span class="ribbon ${item.badgeType||""}">${item.badge}</span>`:"";
-   el.innerHTML=`${ribbon}<div class="card-top ${item.badge?"has-ribbon":""}"><div><div class="allowance">${item.name}</div><div class="description">${item.desc}</div></div><div class="price">${item.price}<small>incl. applicable taxes</small></div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("shield")} Bundle</span></div><span class="points"><b>★</b> ${item.points} pts</span></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}<div class="card-action"><span class="fineprint">Tap to view bundle details</span><button class="primary">Select plan</button></div>`;
+   const st=statusLabels[item.status];
+   const ribbon=st?`<div class="status-row"><span class="ribbon ${item.status}">${st}</span></div>`:"";
+   el.innerHTML=`${ribbon}<div class="card-top"><div><div class="allowance">${item.name}</div><div class="description">${item.desc}</div></div><div class="price">${item.price}<small>incl. applicable taxes</small></div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("shield")} Bundle</span></div><span class="points"><b>★</b> ${item.points} pts</span></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}<div class="card-action"><span class="fineprint">Tap to view bundle details</span><button class="primary">Select plan</button></div>`;
    el.querySelector(".primary").addEventListener("click",()=>openModal(item,false));
   }
   cards.appendChild(el);
