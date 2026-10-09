@@ -295,7 +295,7 @@ function render(){
    if(action){
     const top=el.querySelector(".card-top");
     el.classList.add("expandable");
-    const toggleCard=()=>{const open=el.classList.toggle("open");top.setAttribute("aria-expanded",open)};
+    const toggleCard=()=>{const open=el.classList.toggle("open");top.setAttribute("aria-expanded",open);if(open)document.querySelectorAll(".plan-card.open").forEach(o=>{if(o!==el){o.classList.remove("open");const t=o.querySelector(".card-top");t&&t.setAttribute("aria-expanded","false")}})};
     el.addEventListener("click",e=>{if(e.target.closest(".renew,.pay-panel"))return;toggleCard()});
     top.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggleCard()}});
     const payBtn=el.querySelector(".pay-btn");payBtn.addEventListener("click",()=>{if(!payBtn.disabled)openCheckout(item,action,payBtn)});
