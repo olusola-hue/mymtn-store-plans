@@ -120,12 +120,12 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 <div class="modal-backdrop" id="modalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle">Plan details</h2><p id="modalDescription"></p><div class="modal-row"><span>Validity</span><strong id="modalValidity">—</strong></div><div class="modal-row"><span>Reward points</span><strong id="modalPoints">—</strong></div><div class="modal-row"><span>Price</span><strong id="modalPrice">—</strong></div><button class="primary" id="modalContinue">Continue</button><button class="icon-btn" id="modalClose" style="width:100%;border-radius:10px;margin-top:8px">Close</button></section></div>
 <script>
 const plans = [
- {category:"Internet",name:"30 GB",qty:30,unit:"GB",price:"₦10,000",desc:"Stay connected for longer",validity:"30 Days",points:"40,055",status:"active",autoRenew:true},
- {category:"Internet",name:"15 GB",qty:15,unit:"GB",price:"₦5,000",desc:"Everyday data bundle",validity:"20 Days",points:"10,500",status:"expiring"},
- {category:"Internet",name:"5 GB",qty:5,unit:"GB",price:"₦1,500",desc:"Great for everyday browsing",validity:"7 Days",points:"2,500",status:"expired"},
- {category:"Call & Message",name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",desc:"Voice bundle",validity:"30 Days",points:"2,500",status:"active",autoRenew:true},
- {category:"Call & Message",name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",desc:"Voice bundle",validity:"7 Days",points:"1,000"},
- {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",desc:"SMS bundle",validity:"7 Days",points:"300"}
+ {category:"Internet",name:"30 GB",qty:30,unit:"GB",price:"₦10,000",type:"Monthly Plan",validity:"30 Days",points:"40,055",status:"active",autoRenew:true},
+ {category:"Internet",name:"15 GB",qty:15,unit:"GB",price:"₦5,000",type:"Betamix Bundle Max",validity:"20 Days",points:"10,500",status:"expiring"},
+ {category:"Internet",name:"5 GB",qty:5,unit:"GB",price:"₦1,500",type:"Weekly Plan",validity:"7 Days",points:"2,500",status:"expired"},
+ {category:"Call & Message",name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",type:"Monthly Plan",validity:"30 Days",points:"2,500",status:"active",autoRenew:true},
+ {category:"Call & Message",name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",type:"Weekly Plan",validity:"7 Days",points:"1,000"},
+ {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",type:"Weekly Plan",validity:"7 Days",points:"300"}
 ];
 const devices=[
  {category:"Devices",name:"4G MiFi",desc:"Portable internet connectivity",icon:"mifi"},
@@ -147,7 +147,7 @@ function deviceSvg(type){
 }
 function render(){
  const q=searchInput.value.trim().toLowerCase();
- let items=(currentCategory==="Devices"?devices:plans.filter(p=>p.category===currentCategory)).filter(x=>(x.name+" "+x.desc).toLowerCase().includes(q));
+ let items=(currentCategory==="Devices"?devices:plans.filter(p=>p.category===currentCategory)).filter(x=>(x.name+" "+(x.type||x.desc)).toLowerCase().includes(q));
  document.getElementById("sectionTitle").textContent=currentCategory==="Internet"?"Internet bundles":currentCategory==="Call & Message"?"Call & message bundles":"Devices & connectivity";
  document.getElementById("countLabel").textContent=items.length+(currentCategory==="Devices"?" devices":currentCategory==="Internet"?" plans":" bundles");
  cards.innerHTML="";
@@ -160,7 +160,7 @@ function render(){
   }else{
    const st=statusLabels[item.status];
    const ribbon=st?`<div class="status-row"><span class="ribbon ${item.status}">${st}</span></div>`:"";
-   el.innerHTML=`${ribbon}<div class="card-top"><div><div class="allowance">${item.name}</div><div class="description">${item.desc}</div></div><div class="price">${item.price}</div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("share")} ${shareText(item)}</span></div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}`;
+   el.innerHTML=`${ribbon}<div class="card-top"><div><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div><div class="price">${item.price}</div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("share")} ${shareText(item)}</span></div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}`;
    const sw=el.querySelector(".switch");
    sw.addEventListener("click",()=>{item.autoRenew=!item.autoRenew;sw.setAttribute("aria-checked",item.autoRenew);toast("Auto-renewal turned "+(item.autoRenew?"on":"off")+" for "+item.name+".")});
   }
@@ -170,7 +170,7 @@ function render(){
 function openModal(item,isDevice){
  selected=item;
  document.getElementById("modalTitle").textContent=isDevice?item.name:item.name+" bundle";
- document.getElementById("modalDescription").textContent=isDevice?item.desc+" — this is a concept offer. Availability and pricing would be confirmed by MTN.":item.desc+". This prototype uses illustrative offer details; check the official MTN app for current pricing and eligibility.";
+ document.getElementById("modalDescription").textContent=isDevice?item.desc+" — this is a concept offer. Availability and pricing would be confirmed by MTN.":item.type+". This prototype uses illustrative offer details; check the official MTN app for current pricing and eligibility.";
  document.getElementById("modalValidity").textContent=isDevice?"Enquire for details":item.validity;
  document.getElementById("modalPoints").textContent=isDevice?"—":item.points+" points";
  document.getElementById("modalPrice").textContent=isDevice?"View offer":item.price;
