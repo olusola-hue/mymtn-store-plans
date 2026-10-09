@@ -44,10 +44,6 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .ribbon.exhausted{background:#e6e9f2;color:#3b4766}
 .status-row + .card-top{padding-top:12px}
 .card-top > div:first-child{min-width:0;overflow-wrap:anywhere}
-.svc{display:flex;align-items:center;gap:10px}
-.logo-tile{width:46px;height:46px;border-radius:13px;background:#f4f4f5;border:1px solid #eceef0;display:grid;place-items:center;flex-shrink:0;overflow:hidden;font-weight:800;font-size:17px;color:#2b2b2b}
-.logo-tile img{width:100%;height:100%;object-fit:contain;padding:3px;display:block}
-.svc-text{min-width:0}
 .plan-card.expandable{cursor:pointer}
 .card-top:focus-visible{outline:2px solid #171717;outline-offset:-2px;border-radius:16px}
 .price.has-chev{display:flex;align-items:center;gap:6px}
@@ -135,10 +131,10 @@ const plans = [
  {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",type:"Weekly Plan",validity:"7 Days",points:"300"},
  {category:"Internet",name:"FibreX",price:"₦20,000",type:"50Mbps",validity:"30 Days",points:"20,000",status:"active",autoRenew:true},
  {category:"Internet",name:"FlyX (ODU)",price:"₦35,000",type:"100Mbps",validity:"30 Days",points:"35,000",status:"expiring"},
- {category:"Entertainment",name:"Netflix",logo:"logos/netflix.png",price:"₦5,000",type:"Standard Plan",validity:"30 Days",points:"5,000",status:"active",autoRenew:true},
- {category:"Entertainment",name:"Apple Music",logo:"logos/apple-music.png",price:"₦1,500",type:"Individual Plan",validity:"30 Days",points:"1,500",status:"active"},
- {category:"Entertainment",name:"Spotify",logo:"logos/spotify.png",price:"₦1,300",type:"Premium Individual",validity:"30 Days",points:"1,300",status:"expiring"},
- {category:"Entertainment",name:"DSTV",logo:"logos/dstv.png",price:"₦15,700",type:"Compact Plan",validity:"30 Days",points:"15,700",status:"expired"}
+ {category:"Entertainment",name:"Netflix",price:"₦5,000",type:"Standard Plan",validity:"30 Days",points:"5,000",status:"active",autoRenew:true},
+ {category:"Entertainment",name:"Apple Music",price:"₦1,500",type:"Individual Plan",validity:"30 Days",points:"1,500",status:"active"},
+ {category:"Entertainment",name:"Spotify",price:"₦1,300",type:"Premium Individual",validity:"30 Days",points:"1,300",status:"expiring"},
+ {category:"Entertainment",name:"DSTV",price:"₦15,700",type:"Compact Plan",validity:"30 Days",points:"15,700",status:"expired"}
 ];
 const SHARE_MAX=0.2;
 const shareText=item=>{const v=Math.round(item.qty*SHARE_MAX*10)/10;return "Share up to "+v+" "+item.unit};
@@ -159,8 +155,7 @@ function render(){
    const ribbon=st?`<div class="status-row"><span class="ribbon ${item.status}">${st}</span></div>`:"";
    const action=(item.status==="active"||item.status==="expiring")?"Stack Plan":(item.status==="expired"||item.status==="exhausted")?"Renew Plan":null;
    const chev=action?'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>':"";
-   el.innerHTML=`${ribbon}<div class="card-top"${action?' tabindex="0" role="button" aria-expanded="false"':""}><div>${item.logo?`<div class="svc"><span class="logo-tile"><img src="${item.logo}" alt=""></span><div class="svc-text"><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div></div>`:`<div class="allowance">${item.name}</div><div class="description">${item.type}</div>`}</div><div class="price${action?" has-chev":""}">${item.price}${chev}</div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span>${item.category==="Internet"&&item.qty?`<span class="meta">${icon("share")} ${shareText(item)}</span>`:""}</div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}${action?`<div class="pay-panel"><div class="pay-inner"><button class="primary pay-btn">${action}</button></div></div>`:""}`;
-   el.querySelectorAll(".logo-tile img").forEach(img=>img.addEventListener("error",()=>img.replaceWith(document.createTextNode(item.name.charAt(0)))));
+   el.innerHTML=`${ribbon}<div class="card-top"${action?' tabindex="0" role="button" aria-expanded="false"':""}><div><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div><div class="price${action?" has-chev":""}">${item.price}${chev}</div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span>${item.category==="Internet"&&item.qty?`<span class="meta">${icon("share")} ${shareText(item)}</span>`:""}</div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}${action?`<div class="pay-panel"><div class="pay-inner"><button class="primary pay-btn">${action}</button></div></div>`:""}`;
    const sw=el.querySelector(".switch");
    sw.addEventListener("click",()=>{item.autoRenew=!item.autoRenew;sw.setAttribute("aria-checked",item.autoRenew);toast("Auto-renewal turned "+(item.autoRenew?"on":"off")+" for "+item.name+".")});
    if(action){
