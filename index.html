@@ -68,6 +68,12 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .meta-left{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .meta{display:flex;gap:5px;align-items:center;color:#5f6268;font-size:11px}
 .meta svg{width:14px;height:14px}
+.meta.off{color:#9a9a9a}
+.share-btn{border:0;background:#f4f4f4;border-radius:999px;padding:5px 8px 5px 9px;font-weight:650;color:#171717}
+.share-btn .share-go{width:12px;height:12px;margin-left:1px}
+.share-btn:focus-visible{outline:2px solid #171717;outline-offset:2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:-2px 0 14px}
+.chip{border:1px solid #dcdde0;background:#fff;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:650;color:var(--ink)}
 .meta.low{color:#d32f2f;font-weight:600}
 .timer{padding:9px 16px;background:#fff9dd;border-top:1px solid #f6e8a7;color:#695600;font-size:11px;display:flex;justify-content:space-between;align-items:center}
 .timer strong{font-variant-numeric:tabular-nums;letter-spacing:.5px}
@@ -275,7 +281,7 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 <script>
 const plans = [
  {category:"Internet",lines:["primary"],name:"30 GB",qty:30,unit:"GB",price:"₦10,000",tag:"",term:30,left:18,points:"40,055",status:"active",autoRenew:true},
- {category:"Internet",lines:["primary"],name:"15 GB",qty:15,unit:"GB",price:"₦5,000",tag:"Betamix Bundle Max",term:14,left:3,points:"10,500",status:"expiring"},
+ {category:"Internet",lines:["primary"],name:"15 GB",qty:15,unit:"GB",noShare:true,price:"₦5,000",tag:"Betamix Bundle Max",term:14,left:3,points:"10,500",status:"expiring"},
  {category:"Internet",lines:["primary"],name:"10 GB",qty:10,unit:"GB",price:"₦3,500",tag:"",term:30,left:12,points:"5,000",status:"exhausted"},
  {category:"Internet",lines:["primary"],name:"5 GB",qty:5,unit:"GB",price:"₦1,500",tag:"",term:7,left:0,points:"2,500",status:"expired"},
  {category:"Call & Message",lines:["primary"],name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",tag:"",term:30,left:22,points:"2,500",status:"active",autoRenew:true},
@@ -298,7 +304,11 @@ plans.forEach(p=>{p.type=(p.tag?p.tag+" · ":"")+termLabel(p.term)});
 const daysText=n=>n+(n===1?" Day":" Days");
 
 const SHARE_MAX=0.2;
-const shareText=item=>{const v=Math.round(item.qty*SHARE_MAX*10)/10;return "Share up to "+v+" "+item.unit};
+const shareMax=item=>Math.round(item.qty*SHARE_MAX*10)/10;
+const shareLeft=item=>Math.max(0,Math.round((shareMax(item)-(item.shared||0))*10)/10);
+const shareText=item=>"Share up to "+shareLeft(item)+" "+item.unit;
+const canShare=item=>!item.noShare&&shareLeft(item)>0&&(item.status==="active"||item.status==="expiring");
+const shareMeta=item=>item.noShare?`<span class="meta off">${icon("share")} Not sharable</span>`:canShare(item)?`<button class="meta share-btn" aria-label="Share ${item.name} data. ${shareText(item)}">${icon("share")} ${shareText(item)}<svg class="share-go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>`:`<span class="meta">${icon("share")} ${item.shared&&!shareLeft(item)?"Share limit reached":shareText(item)}</span>`;
 const statusLabels={active:"ACTIVE",expiring:"EXPIRING SOON",expired:"EXPIRED",exhausted:"EXHAUSTED"};
 let currentCategory="Internet";
 const cards=document.getElementById("cards"), searchInput=document.getElementById("searchInput");
@@ -317,15 +327,16 @@ function render(){
    const action=(item.status==="active"||item.status==="expiring")?"Stack Plan":(item.status==="expired"||item.status==="exhausted")?"Renew Plan":null;
    const locked=action==="Stack Plan"&&item.category==="Internet"&&item.stackAdded&&item.left>item.stackAdded;
    const chev=action?'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>':"";
-   el.innerHTML=`${ribbon}<div class="card-top"${action?' tabindex="0" role="button" aria-expanded="false"':""}><div><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div><div class="price${action?" has-chev":""}">${item.price}${chev}</div></div><div class="card-meta"><div class="meta-left"><span class="meta${item.left<7?" low":""}">${icon("calendar")} ${daysText(item.left)}</span>${item.category==="Internet"&&item.qty?`<span class="meta">${icon("share")} ${shareText(item)}</span>`:""}</div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}${action?`<div class="pay-panel"><div class="pay-inner"><button class="primary pay-btn"${locked?" disabled":""}>${action}</button>${locked?`<p class="stack-note" role="note">One extension at a time. You can stack again once your added ${daysText(item.stackAdded)} start.</p>`:""}</div></div>`:""}`;
+   el.innerHTML=`${ribbon}<div class="card-top"${action?' tabindex="0" role="button" aria-expanded="false"':""}><div><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div><div class="price${action?" has-chev":""}">${item.price}${chev}</div></div><div class="card-meta"><div class="meta-left"><span class="meta${item.left<7?" low":""}">${icon("calendar")} ${daysText(item.left)}</span>${item.category==="Internet"&&item.qty?shareMeta(item):""}</div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}${action?`<div class="pay-panel"><div class="pay-inner"><button class="primary pay-btn"${locked?" disabled":""}>${action}</button>${locked?`<p class="stack-note" role="note">One extension at a time. You can stack again once your added ${daysText(item.stackAdded)} start.</p>`:""}</div></div>`:""}`;
    const sw=el.querySelector(".switch");
    sw.addEventListener("click",()=>{item.autoRenew=!item.autoRenew;sw.setAttribute("aria-checked",item.autoRenew);toast("Auto-renewal turned "+(item.autoRenew?"on":"off")+" for "+item.name+".")});
    if(action){
     const top=el.querySelector(".card-top");
     el.classList.add("expandable");
     const toggleCard=()=>{const open=el.classList.toggle("open");top.setAttribute("aria-expanded",open);if(open)document.querySelectorAll(".plan-card.open").forEach(o=>{if(o!==el){o.classList.remove("open");const t=o.querySelector(".card-top");t&&t.setAttribute("aria-expanded","false")}})};
-    el.addEventListener("click",e=>{if(e.target.closest(".renew,.pay-panel"))return;toggleCard()});
+    el.addEventListener("click",e=>{if(e.target.closest(".renew,.pay-panel,.share-btn"))return;toggleCard()});
     top.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggleCard()}});
+    const shBtn=el.querySelector(".share-btn");if(shBtn)shBtn.addEventListener("click",()=>openShare(item,shBtn));
     const payBtn=el.querySelector(".pay-btn");payBtn.addEventListener("click",()=>{if(!payBtn.disabled)openCheckout(item,action,payBtn)});
    }
   cards.appendChild(el);
@@ -386,6 +397,23 @@ function openCheckout(item,action,opener){
  const first=allMethods().find(m=>m.ok);flow.method=first?first.id:null;
  lastOpener=opener;sheetBackdrop.classList.add("open");appRoot.inert=true;document.body.style.overflow="hidden";showStep();
 }
+function openShare(item,opener){
+ flow={item,step:"share",share:{num:"",amt:"",err:{}}};
+ lastOpener=opener;sheetBackdrop.classList.add("open");appRoot.inert=true;document.body.style.overflow="hidden";showStep();
+}
+function doShare(){
+ const f=flow,sh=f.share,item=f.item,left=shareLeft(item),digits=sh.num.replace(/\D/g,""),amt=parseFloat(sh.amt),err={};
+ if(!/^0\d{10}$/.test(digits))err.num="Enter a valid 11-digit phone number";
+ else if(digits===numbers[activeNumber].number.replace(/\D/g,""))err.num="You can't share with your own number";
+ if(!(amt>0))err.amt="Enter an amount to share";
+ else if(amt>left)err.amt="You can share at most "+left+" "+item.unit;
+ sh.err=err;
+ const bad=Object.keys(err);
+ if(bad.length){showStep();document.getElementById(bad[0]==="num"?"shNum":"shAmt").focus();return}
+ item.shared=Math.round(((item.shared||0)+amt)*10)/10;
+ f.sharedAmt=amt;f.sharedTo=digits.replace(/(\d{4})(\d{3})(\d{4})/,"$1 $2 $3");
+ f.step="shared";showStep();render();
+}
 function closeCheckout(){
  clearTimers();flow=null;sheetBackdrop.classList.remove("open");appRoot.inert=false;document.body.style.overflow="";
  if(lastOpener&&document.contains(lastOpener))lastOpener.focus();
@@ -411,7 +439,22 @@ function showStep(){
  const f=flow;f.busy=false;
  const item=f.item,num=numbers[activeNumber],stack=f.action==="Stack Plan";
  let html="";
- if(f.step==="review"){
+ if(f.step==="share"){
+  const sh=f.share,e=sh.err||{},left=shareLeft(item);
+  html=`<div class="sheet-head"><h2 id="sheetTitle" tabindex="-1">Share data</h2><button class="sheet-x" data-act="close" aria-label="Close">${ic.x}</button></div>
+  <div class="summary"><div class="sum-top"><div><div class="sum-name">${item.name}</div><div class="sum-type">${item.type}</div></div><div class="sum-price">${daysText(item.left)} left</div></div>
+  <div class="sum-row"><span>You can share up to</span><strong>${left} ${item.unit}</strong></div>
+  <div class="sum-row"><span>From</span><strong>${num.number}</strong></div></div>
+  <div class="field"><label for="shNum">Recipient's number</label><input id="shNum" data-s="num" type="tel" inputmode="numeric" autocomplete="off" placeholder="0803 000 0000" maxlength="13" value="${sh.num}"${e.num?' aria-invalid="true" aria-describedby="shNumErr"':""}>${e.num?`<small class="field-err" id="shNumErr">${e.num}</small>`:""}</div>
+  <div class="field"><label for="shAmt">Amount (${item.unit})</label><input id="shAmt" data-s="amt" inputmode="decimal" autocomplete="off" placeholder="e.g. ${Math.min(1,left)}" maxlength="5" value="${sh.amt}"${e.amt?' aria-invalid="true" aria-describedby="shAmtErr"':""}>${e.amt?`<small class="field-err" id="shAmtErr">${e.amt}</small>`:""}</div>
+  <div class="chips" role="group" aria-label="Quick amounts">${[0.25,0.5,1].map(x=>Math.round(left*x*10)/10).filter((v,i,a)=>v>0&&a.indexOf(v)===i).map(v=>`<button class="chip" data-act="shamt" data-v="${v}">${v} ${item.unit}</button>`).join("")}</div>
+  <p class="form-note" style="margin:0 0 16px">The recipient gets this data for the ${daysText(item.left)} left on your plan. Shared data can't be taken back.</p>
+  <button class="primary wide" data-act="doshare">Share ${item.unit==="GB"?"data":""}</button>`;
+ }else if(f.step==="shared"){
+  html=`<div class="done-ic">${ic.ok}</div><h2 class="done-title" id="sheetTitle" tabindex="-1">Data shared</h2>
+  <p class="done-sub"><b>${f.sharedAmt} ${item.unit}</b> has been sent to <b>${f.sharedTo}</b>. You can still share up to ${shareLeft(item)} ${item.unit} from this plan.</p>
+  <button class="primary wide" data-act="done">Done</button>`;
+ }else if(f.step==="review"){
   html=`<div class="sheet-head"><h2 id="sheetTitle" tabindex="-1">${f.action}</h2><button class="sheet-x" data-act="close" aria-label="Close">${ic.x}</button></div>
   <div class="summary"><div class="sum-top"><div><div class="sum-name">${item.name}</div><div class="sum-type">${item.type}</div></div><div class="sum-price">${item.price}</div></div>
   <div class="sum-row"><span>Number</span><strong>${num.number}${num.dedicated?" · "+num.label:""}</strong></div>
@@ -544,6 +587,8 @@ sheetBody.addEventListener("click",e=>{
  else if(act==="other"){flow.other=a.dataset.id;showStep();const sel=sheetBody.querySelector('.method.sub[aria-checked="true"]');sel&&sel.focus()}
  else if(act==="paid")startProcessing();
  else if(act==="copy"){const t=flow.step==="ussd"?flow.ussd:flow.acct;try{navigator.clipboard.writeText(t).catch(()=>{})}catch(_){}a.textContent="Copied"}
+ else if(act==="doshare")doShare();
+ else if(act==="shamt"){flow.share.amt=a.dataset.v;showStep();document.getElementById("shAmt").focus()}
  else if(act==="bio")runBio();
  else if(act==="usepin"){clearTimeout(bioTimer);flow.step="pin";flow.code="";showStep()}
  else if(act==="resend"){flow.code="";flow.sent=true;updateCode();startOtpTimer();}
@@ -556,6 +601,13 @@ sheetBody.addEventListener("input",e=>{
  else if(key==="cvv"){v=v.replace(/\D/g,"").slice(0,4)}
  t.value=v;flow.card[key]=v;
  if(flow.card.err[key]){delete flow.card.err[key];t.removeAttribute("aria-invalid");t.removeAttribute("aria-describedby");const er=t.parentElement.querySelector(".field-err");er&&er.remove()}
+});
+sheetBody.addEventListener("input",e=>{
+ const t=e.target,k=t.dataset.s;if(!flow||!k)return;
+ let v=t.value;
+ if(k==="num")v=v.replace(/[^\d ]/g,"");else v=v.replace(/[^\d.]/g,"");
+ t.value=v;flow.share[k]=v;
+ if(flow.share.err[k]){delete flow.share.err[k];t.removeAttribute("aria-invalid");t.removeAttribute("aria-describedby");const er=t.parentElement.querySelector(".field-err");er&&er.remove()}
 });
 sheetBody.addEventListener("change",e=>{if(flow&&e.target.dataset.f==="save")flow.card.save=e.target.checked});
 sheetBackdrop.addEventListener("click",e=>{if(e.target===sheetBackdrop&&flow&&flow.step!=="proc")closeCheckout()});
