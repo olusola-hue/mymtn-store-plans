@@ -263,7 +263,10 @@ const plans = [
  {category:"Internet",lines:["work"],name:"50 GB",qty:50,unit:"GB",price:"₦17,000",tag:"Corporate Bundle",term:30,left:6,points:"17,000",status:"expiring"},
  {category:"Internet",lines:["work"],name:"20 GB",qty:20,unit:"GB",price:"₦6,000",tag:"Business",term:7,left:3,points:"6,000",status:"exhausted"},
  {category:"Call & Message",lines:["work"],name:"500 Minutes",qty:500,unit:"Min",price:"₦8,000",tag:"Business Voice",term:30,left:11,points:"8,000",status:"active",autoRenew:true},
- {category:"Call & Message",lines:["work"],name:"1,000 SMS",qty:1000,unit:"SMS",price:"₦2,500",tag:"Bulk SMS Bundle",term:30,left:0,points:"2,500",status:"expired"}
+ {category:"Call & Message",lines:["work"],name:"1,000 SMS",qty:1000,unit:"SMS",price:"₦2,500",tag:"Bulk SMS Bundle",term:30,left:0,points:"2,500",status:"expired"},
+ {category:"Internet",lines:["postpaid"],name:"60 GB",qty:60,unit:"GB",price:"₦18,000",tag:"Postpaid",term:30,left:9,points:"18,000",status:"active",autoRenew:true},
+ {category:"Internet",lines:["postpaid"],name:"150 GB",qty:150,unit:"GB",price:"₦40,000",tag:"Postpaid Plus",term:30,left:4,points:"40,000",status:"expiring"},
+ {category:"Call & Message",lines:["postpaid"],name:"1,000 Minutes",qty:1000,unit:"Min",price:"₦12,000",tag:"Postpaid Voice",term:30,left:20,points:"12,000",status:"active",autoRenew:true}
 ];
 const termLabel=d=>d===1?"1 Day Plan":d===7?"1 Week Plan":d===14?"2 Weeks Plan":d===30?"1 Month Plan":d+" Days Plan";
 plans.forEach(p=>{p.type=(p.tag?p.tag+" · ":"")+termLabel(p.term)});
@@ -311,6 +314,7 @@ function toast(msg){const el=document.getElementById("toast");el.textContent=msg
 const numbers=[
  {id:"primary",number:"0803 555 0142",label:"Primary"},
  {id:"work",number:"0813 555 0187",label:"Work"},
+ {id:"postpaid",number:"0802 555 0178",label:"Postpaid"},
  {id:"fibrex",number:"0706 555 0153",label:"FibreX",dedicated:true},
  {id:"flyx",number:"0816 555 0164",label:"FlyX (ODU)",dedicated:true}
 ];
