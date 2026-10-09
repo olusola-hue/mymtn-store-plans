@@ -42,6 +42,7 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .ribbon.active{background:#e3f4ea;color:#11663a}
 .ribbon.expiring{background:#ffe9bf;color:#8a5200}
 .ribbon.expired{background:#fde4e4;color:#b3261e}
+.ribbon.exhausted{background:#e6e9f2;color:#3b4766}
 .status-row + .card-top{padding-top:12px}
 .card-top > div:first-child{min-width:0;overflow-wrap:anywhere}
 .card-meta{display:flex;align-items:center;justify-content:space-between;padding:2px 16px 16px;gap:8px}
@@ -124,7 +125,7 @@ const plans = [
  {category:"Internet",name:"15 GB",qty:15,unit:"GB",price:"₦5,000",type:"Betamix Bundle Max",validity:"20 Days",points:"10,500",status:"expiring"},
  {category:"Internet",name:"5 GB",qty:5,unit:"GB",price:"₦1,500",type:"Weekly Plan",validity:"7 Days",points:"2,500",status:"expired"},
  {category:"Call & Message",name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",type:"Monthly Plan",validity:"30 Days",points:"2,500",status:"active",autoRenew:true},
- {category:"Call & Message",name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",type:"Weekly Plan",validity:"7 Days",points:"1,000"},
+ {category:"Call & Message",name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",type:"Weekly Plan",validity:"7 Days",points:"1,000",status:"exhausted"},
  {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",type:"Weekly Plan",validity:"7 Days",points:"300"}
 ];
 const devices=[
@@ -135,7 +136,7 @@ const devices=[
 ];
 const SHARE_MAX=0.2;
 const shareText=item=>{const v=Math.round(item.qty*SHARE_MAX*10)/10;return "Share up to "+v+" "+item.unit};
-const statusLabels={active:"ACTIVE",expiring:"EXPIRING SOON",expired:"EXPIRED"};
+const statusLabels={active:"ACTIVE",expiring:"EXPIRING SOON",expired:"EXPIRED",exhausted:"EXHAUSTED"};
 let currentCategory="Internet",selected=null;
 const cards=document.getElementById("cards"), searchInput=document.getElementById("searchInput");
 const icon=(type)=> type==="share" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.8 7.4-4.4M8.3 13.2l7.4 4.4"/></svg>' : type==="calendar" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 7.8 7.5 9.5 4.3-1.7 7.5-5 7.5-9.5V6z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg>';
