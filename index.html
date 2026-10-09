@@ -45,8 +45,8 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .status-row + .card-top{padding-top:12px}
 .card-top > div:first-child{min-width:0;overflow-wrap:anywhere}
 .svc{display:flex;align-items:center;gap:10px}
-.logo-tile{width:40px;height:40px;border-radius:12px;background:#f4f4f5;border:1px solid #eceef0;display:grid;place-items:center;flex-shrink:0;overflow:hidden;font-weight:800;font-size:17px;color:#2b2b2b}
-.logo-tile img{width:100%;height:100%;object-fit:contain;padding:6px;display:block}
+.logo-tile{width:46px;height:46px;border-radius:13px;background:#f4f4f5;border:1px solid #eceef0;display:grid;place-items:center;flex-shrink:0;overflow:hidden;font-weight:800;font-size:17px;color:#2b2b2b}
+.logo-tile img{width:100%;height:100%;object-fit:contain;padding:3px;display:block}
 .svc-text{min-width:0}
 .plan-card.expandable{cursor:pointer}
 .card-top:focus-visible{outline:2px solid #171717;outline-offset:-2px;border-radius:16px}
@@ -135,10 +135,10 @@ const plans = [
  {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",type:"Weekly Plan",validity:"7 Days",points:"300"},
  {category:"Internet",name:"FibreX",price:"₦20,000",type:"50Mbps",validity:"30 Days",points:"20,000",status:"active",autoRenew:true},
  {category:"Internet",name:"FlyX (ODU)",price:"₦35,000",type:"100Mbps",validity:"30 Days",points:"35,000",status:"expiring"},
- {category:"Entertainment",name:"Netflix",logo:"logos/netflix.svg",price:"₦5,000",type:"Standard Plan",validity:"30 Days",points:"5,000",status:"active",autoRenew:true},
- {category:"Entertainment",name:"Apple Music",logo:"logos/apple-music.svg",price:"₦1,500",type:"Individual Plan",validity:"30 Days",points:"1,500",status:"active"},
- {category:"Entertainment",name:"Spotify",logo:"logos/spotify.svg",price:"₦1,300",type:"Premium Individual",validity:"30 Days",points:"1,300",status:"expiring"},
- {category:"Entertainment",name:"DSTV",logo:"logos/dstv.svg",price:"₦15,700",type:"Compact Plan",validity:"30 Days",points:"15,700",status:"expired"}
+ {category:"Entertainment",name:"Netflix",logo:"logos/netflix.png",price:"₦5,000",type:"Standard Plan",validity:"30 Days",points:"5,000",status:"active",autoRenew:true},
+ {category:"Entertainment",name:"Apple Music",logo:"logos/apple-music.png",price:"₦1,500",type:"Individual Plan",validity:"30 Days",points:"1,500",status:"active"},
+ {category:"Entertainment",name:"Spotify",logo:"logos/spotify.png",price:"₦1,300",type:"Premium Individual",validity:"30 Days",points:"1,300",status:"expiring"},
+ {category:"Entertainment",name:"DSTV",logo:"logos/dstv.png",price:"₦15,700",type:"Compact Plan",validity:"30 Days",points:"15,700",status:"expired"}
 ];
 const SHARE_MAX=0.2;
 const shareText=item=>{const v=Math.round(item.qty*SHARE_MAX*10)/10;return "Share up to "+v+" "+item.unit};
