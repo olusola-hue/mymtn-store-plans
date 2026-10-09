@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffcb05">
+<title>myMTN NG — Store Plans</title>
+<style>
+:root{--mtn-yellow:#ffcb05;--ink:#171717;--muted:#6e7177;--line:#ececec;--soft:#f7f7f7;--green:#17854b}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{max-width:460px;min-height:100vh;margin:0 auto;background:#fff;padding-bottom:100px;position:relative}
+.status{height:28px;padding:7px 22px 0;font-size:12px;font-weight:700;display:flex;justify-content:space-between}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 16px}
+.brand{display:flex;align-items:center;gap:10px}
+.mtn-mark{width:38px;height:28px;background:var(--mtn-yellow);border-radius:7px;display:grid;place-items:center;font-weight:900;font-size:14px;letter-spacing:-1px}
+h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
+.top-actions{display:flex;gap:10px}
+.icon-btn{width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:white;display:grid;place-items:center;position:relative;color:#222}
+.icon-btn svg{width:20px;height:20px}
+.dot{position:absolute;right:8px;top:7px;width:7px;height:7px;background:#e53935;border:1px solid white;border-radius:50%}
+.search-wrap{padding:0 20px 18px}
+.search{height:46px;border:1px solid #e6e6e6;background:#fafafa;border-radius:13px;display:flex;align-items:center;gap:10px;padding:0 13px}
+.search svg{width:19px;color:#777;flex-shrink:0}
+.search input{border:0;outline:0;background:transparent;width:100%;font-size:14px}
+.tabs{display:flex;gap:8px;padding:0 20px 20px;overflow-x:auto}
+.tab{border:1px solid #e7e7e7;border-radius:999px;padding:10px 15px;background:#fff;color:#555;white-space:nowrap;font-weight:650;font-size:13px}
+.tab.active{background:var(--mtn-yellow);border-color:var(--mtn-yellow);color:#151515}
+.section-head{padding:0 20px 13px;display:flex;justify-content:space-between;align-items:center}
+.section-head h2{margin:0;font-size:17px;letter-spacing:-.25px}
+.count{font-size:12px;color:var(--muted)}
+.cards{padding:0 16px;display:grid;gap:13px}
+.plan-card{border:1px solid #e9e9e9;border-radius:17px;overflow:hidden;background:#fff;position:relative}
+.card-top{padding:17px 16px 13px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.allowance{font-size:25px;font-weight:850;letter-spacing:-.8px;line-height:1.1}
+.description{color:#777;font-size:12px;margin-top:7px}
+.price{font-size:19px;font-weight:800;white-space:nowrap;text-align:right}
+.price small{display:block;font-size:11px;color:#777;font-weight:500;margin-top:3px}
+.ribbon{position:absolute;top:0;left:0;background:var(--mtn-yellow);font-size:9px;font-weight:900;letter-spacing:.5px;padding:5px 10px 5px 16px;border-radius:0 0 9px 0}
+.ribbon.popular{background:#171717;color:white}
+.ribbon.only{background:#fff1a6}
+.card-top.has-ribbon{padding-top:30px}
+.card-meta{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid #f0f0f0;background:#fdfdfd;gap:8px}
+.meta-left{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.meta{display:flex;gap:5px;align-items:center;color:#5f6268;font-size:11px}
+.meta svg{width:14px;height:14px}
+.points{font-size:11px;color:#555;font-weight:650;white-space:nowrap}
+.points b{color:#a87900}
+.timer{padding:9px 16px;background:#fff9dd;border-top:1px solid #f6e8a7;color:#695600;font-size:11px;display:flex;justify-content:space-between;align-items:center}
+.timer strong{font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.card-action{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.fineprint{font-size:10px;color:#8b8b8b;line-height:1.4}
+.primary{border:0;border-radius:10px;background:var(--mtn-yellow);padding:11px 18px;font-size:12px;font-weight:850;color:#111;min-width:95px}
+.primary:active{transform:scale(.98)}
+.device-card{padding:16px;display:flex;gap:13px;align-items:center}
+.device-art{width:65px;height:68px;border-radius:13px;background:#fff7cf;display:grid;place-items:center;flex-shrink:0}
+.device-art svg{width:40px;height:40px;stroke:#262626;fill:none;stroke-width:1.8}
+.device-info{flex:1;min-width:0}
+.device-info h3{margin:0 0 6px;font-size:16px}
+.device-info p{margin:0;color:#777;font-size:12px;line-height:1.45}
+.device-bottom{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid #eee}
+.offer{font-size:11px;color:#777}
+.empty{padding:36px 20px;text-align:center;color:#777;font-size:14px}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(460px,100%);height:82px;background:rgba(255,255,255,.98);border:1px solid #e9e9e9;border-bottom:0;border-radius:22px 22px 0 0;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;padding:9px 8px 12px;z-index:5;box-shadow:0 -5px 24px rgba(0,0,0,.04)}
+.nav-item{border:0;background:transparent;color:#858585;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;font-size:10px;font-weight:650;min-width:0;height:54px}
+.nav-item svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8}
+.nav-item.active{color:#171717}
+.store-slot{position:relative;display:flex;justify-content:center;align-items:flex-end;height:68px}
+.store-button{position:absolute;top:-14px;width:59px;height:59px;border-radius:50%;background:var(--mtn-yellow);border:5px solid white;outline:1px solid #e8e8e8;display:grid;place-items:center;box-shadow:0 3px 8px rgba(0,0,0,.08)}
+.store-button svg{width:25px;height:25px;stroke:#111;fill:none;stroke-width:2.5}
+.store-label{font-size:10px;font-weight:800;margin-bottom:-1px;color:#111}
+.toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,15px);opacity:0;pointer-events:none;background:#191919;color:white;padding:12px 16px;border-radius:12px;font-size:12px;z-index:9;transition:.22s;max-width:calc(100% - 36px);text-align:center;box-shadow:0 5px 20px #0002}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.modal-backdrop{position:fixed;inset:0;background:#0005;display:none;align-items:flex-end;justify-content:center;z-index:10}
+.modal-backdrop.open{display:flex}
+.modal{width:min(460px,100%);background:white;border-radius:22px 22px 0 0;padding:24px 22px 32px;box-shadow:0 -8px 30px #0002}
+.modal h2{font-size:20px;margin:0 0 8px}
+.modal p{font-size:13px;line-height:1.55;color:#686868;margin:0 0 20px}
+.modal-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid #eee;font-size:13px}
+.modal .primary{width:100%;margin-top:12px;padding:14px}
+.disclaimer{padding:20px 22px 0;color:#9a9a9a;font-size:10px;line-height:1.5}
+@media(min-width:600px){body{background:#f6f6f6;padding:20px 0}.app{border-radius:24px;box-shadow:0 8px 40px #0000;overflow:hidden;min-height:calc(100vh - 40px)}.bottom-nav{bottom:20px;border-radius:22px}.toast{bottom:116px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="status"><span>9:41</span><span>●●●　▰</span></div>
+  <header class="topbar">
+    <div class="brand"><div class="mtn-mark">MTN</div><h1>Store Plans</h1></div>
+    <div class="top-actions">
+      <button class="icon-btn" id="searchFocus" aria-label="Focus search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></button>
+      <button class="icon-btn" id="notifications" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span class="dot"></span></button>
+    </div>
+  </header>
+  <div class="search-wrap"><label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="searchInput" type="search" placeholder="Search plans, bundles or devices…" autocomplete="off"></label></div>
+  <div class="tabs" role="tablist" aria-label="Store categories">
+    <button class="tab active" data-category="Internet" role="tab" aria-selected="true">Internet</button>
+    <button class="tab" data-category="Call & Message" role="tab" aria-selected="false">Call &amp; Message</button>
+    <button class="tab" data-category="Devices" role="tab" aria-selected="false">Devices</button>
+  </div>
+  <div class="section-head"><h2 id="sectionTitle">Recommended for you</h2><span class="count" id="countLabel">6 plans</span></div>
+  <main class="cards" id="cards"></main>
+  <p class="disclaimer">Illustrative prototype only. Prices, reward points, availability and promotional countdowns are sample content and do not represent live MTN offers.</p>
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-item" data-nav="Home"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button>
+    <button class="nav-item" data-nav="Play"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 8 6 4-6 4z"/></svg><span>Play</span></button>
+    <div class="store-slot"><button class="store-button" data-nav="Store" aria-label="Store"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx=".5"/><rect x="14" y="4" width="6" height="6" rx=".5"/><rect x="4" y="14" width="6" height="6" rx=".5"/><rect x="14" y="14" width="6" height="6" rx=".5"/></svg></button><span class="store-label">Store</span></div>
+    <button class="nav-item" data-nav="Help"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.2 1.8c-1.2 1-1.8 1.2-1.8 3M12 17.5h.01"/></svg><span>Help</span></button>
+    <button class="nav-item" data-nav="More"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>More</span></button>
+  </nav>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<div class="modal-backdrop" id="modalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle">Plan details</h2><p id="modalDescription"></p><div class="modal-row"><span>Validity</span><strong id="modalValidity">—</strong></div><div class="modal-row"><span>Reward points</span><strong id="modalPoints">—</strong></div><div class="modal-row"><span>Price</span><strong id="modalPrice">—</strong></div><button class="primary" id="modalContinue">Continue</button><button class="icon-btn" id="modalClose" style="width:100%;border-radius:10px;margin-top:8px">Close</button></section></div>
+<script>
+const plans = [
+ {category:"Internet",name:"25 GB + 200 Min",price:"₦7,500",desc:"Limited-time bundle",validity:"20 Days",points:"25,700",badge:"ONLY FOR YOU",badgeType:"only",timer:"12h : 18m"},
+ {category:"Internet",name:"30 GB",price:"₦10,000",desc:"Stay connected for longer",validity:"30 Days",points:"40,055",badge:"POPULAR",badgeType:"popular",timer:"10h : 15m"},
+ {category:"Internet",name:"50 GB+",price:"₦15,000",desc:"Limited-time bundle",validity:"30 Days",points:"25,700",badge:"ONLY FOR YOU",badgeType:"only",timer:"12h : 18m"},
+ {category:"Internet",name:"15 GB",price:"₦5,000",desc:"Everyday data bundle",validity:"20 Days",points:"10,500",timer:"10h : 15m"},
+ {category:"Internet",name:"10 GB",price:"₦3,500",desc:"Your data, your way",validity:"20 Days",points:"5,000",timer:"10h : 15m"},
+ {category:"Internet",name:"5 GB",price:"₦1,500",desc:"Great for everyday browsing",validity:"7 Days",points:"2,500"},
+ {category:"Call & Message",name:"200 Minutes",price:"₦2,500",desc:"Voice bundle",validity:"30 Days",points:"2,500",badge:"POPULAR",badgeType:"popular"},
+ {category:"Call & Message",name:"100 Minutes",price:"₦1,000",desc:"Voice bundle",validity:"7 Days",points:"1,000"},
+ {category:"Call & Message",name:"50 SMS",price:"₦300",desc:"SMS bundle",validity:"7 Days",points:"300"}
+];
+const devices=[
+ {category:"Devices",name:"4G MiFi",desc:"Portable internet connectivity",icon:"mifi"},
+ {category:"Devices",name:"5G Router",desc:"High-speed home connectivity",icon:"router"},
+ {category:"Devices",name:"FibreX",desc:"Fibre broadband for home and business",icon:"fibre"},
+ {category:"Devices",name:"FlyX (ODU)",desc:"Outdoor wireless broadband connectivity",icon:"flyx"}
+];
+let currentCategory="Internet",selected=null;
+const cards=document.getElementById("cards"), searchInput=document.getElementById("searchInput");
+const icon=(type)=> type==="calendar" ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 7.8 7.5 9.5 4.3-1.7 7.5-5 7.5-9.5V6z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg>';
+function deviceSvg(type){
+ if(type==="mifi")return '<svg viewBox="0 0 48 48"><rect x="12" y="4" width="24" height="40" rx="5"/><path d="M19 10h10M21 37h6"/><circle cx="24" cy="31" r="1.5"/></svg>';
+ if(type==="router")return '<svg viewBox="0 0 48 48"><path d="M9 25V11M39 25V11M6 25h36v15H6zM17 32h2M24 32h2M31 32h2"/><path d="M15 17a13 13 0 0 1 18 0M19 21a7 7 0 0 1 10 0"/></svg>';
+ if(type==="fibre")return '<svg viewBox="0 0 48 48"><path d="M8 16 24 7l16 9v23H8zM8 16h32M18 39V25h12v14"/><path d="M13 21h4M31 21h4"/></svg>';
+ return '<svg viewBox="0 0 48 48"><rect x="9" y="17" width="30" height="22" rx="3"/><path d="M15 17V9h18v8M17 25h14M17 31h9"/><path d="M5 11a19 19 0 0 1 38 0M11 11a13 13 0 0 1 26 0"/></svg>';
+}
+function render(){
+ const q=searchInput.value.trim().toLowerCase();
+ let items=(currentCategory==="Devices"?devices:plans.filter(p=>p.category===currentCategory)).filter(x=>(x.name+" "+x.desc).toLowerCase().includes(q));
+ document.getElementById("sectionTitle").textContent=currentCategory==="Internet"?"Recommended for you":currentCategory==="Call & Message"?"Call & message bundles":"Devices & connectivity";
+ document.getElementById("countLabel").textContent=items.length+(currentCategory==="Devices"?" devices":currentCategory==="Internet"?" plans":" bundles");
+ cards.innerHTML="";
+ if(!items.length){cards.innerHTML='<div class="empty">No results found. Try a different search.</div>';return}
+ items.forEach(item=>{
+  const el=document.createElement("article");el.className="plan-card";
+  if(currentCategory==="Devices"){
+   el.innerHTML=`<div class="device-card"><div class="device-art">${deviceSvg(item.icon)}</div><div class="device-info"><h3>${item.name}</h3><p>${item.desc}</p></div></div><div class="device-bottom"><span class="offer">Pricing available on enquiry</span><button class="primary" data-action="details">View offer</button></div>`;
+   el.querySelector("button").addEventListener("click",()=>openModal(item,true));
+  }else{
+   const ribbon=item.badge?`<span class="ribbon ${item.badgeType||""}">${item.badge}</span>`:"";
+   el.innerHTML=`${ribbon}<div class="card-top ${item.badge?"has-ribbon":""}"><div><div class="allowance">${item.name}</div><div class="description">${item.desc}</div></div><div class="price">${item.price}<small>incl. applicable taxes</small></div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("shield")} Bundle</span></div><span class="points"><b>★</b> ${item.points} pts</span></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}<div class="card-action"><span class="fineprint">Tap to view bundle details</span><button class="primary">Select plan</button></div>`;
+   el.querySelector(".primary").addEventListener("click",()=>openModal(item,false));
+  }
+  cards.appendChild(el);
+ });
+}
+function openModal(item,isDevice){
+ selected=item;
+ document.getElementById("modalTitle").textContent=isDevice?item.name:item.name+" bundle";
+ document.getElementById("modalDescription").textContent=isDevice?item.desc+" — this is a concept offer. Availability and pricing would be confirmed by MTN.":item.desc+". This prototype uses illustrative offer details; check the official MTN app for current pricing and eligibility.";
+ document.getElementById("modalValidity").textContent=isDevice?"Enquire for details":item.validity;
+ document.getElementById("modalPoints").textContent=isDevice?"—":item.points+" points";
+ document.getElementById("modalPrice").textContent=isDevice?"View offer":item.price;
+ document.getElementById("modalContinue").textContent=isDevice?"Enquire about device":"Continue";
+ document.getElementById("modalBackdrop").classList.add("open");
+}
+function closeModal(){document.getElementById("modalBackdrop").classList.remove("open")}
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{currentCategory=btn.dataset.category;document.querySelectorAll(".tab").forEach(t=>{let active=t===btn;t.classList.toggle("active",active);t.setAttribute("aria-selected",active)});render()}));
+searchInput.addEventListener("input",render);
+document.getElementById("searchFocus").addEventListener("click",()=>searchInput.focus());
+document.getElementById("notifications").addEventListener("click",()=>toast("You're all caught up. New offers and account alerts will appear here."));
+document.querySelectorAll("[data-nav]").forEach(btn=>btn.addEventListener("click",()=>{const dest=btn.dataset.nav;if(dest==="Store"){toast("You're already in Store Plans.");return}toast(dest+" navigation is a prototype placeholder.")}));
+document.getElementById("modalClose").addEventListener("click",closeModal);
+document.getElementById("modalBackdrop").addEventListener("click",e=>{if(e.target.id==="modalBackdrop")closeModal()});
+document.getElementById("modalContinue").addEventListener("click",()=>{closeModal();toast(selected&&selected.category==="Devices"?"Device enquiry is a prototype placeholder.":"Plan purchase is a prototype placeholder.")});
+let toastTimer;
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2800)}
+render();
+</script>
+</body>
+</html>
