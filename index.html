@@ -103,7 +103,7 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
     <button class="tab" data-category="Call & Message" role="tab" aria-selected="false">Call &amp; Message</button>
     <button class="tab" data-category="Devices" role="tab" aria-selected="false">Devices</button>
   </div>
-  <div class="section-head"><h2 id="sectionTitle">Recommended for you</h2><span class="count" id="countLabel">6 plans</span></div>
+  <div class="section-head"><h2 id="sectionTitle">Internet bundles</h2><span class="count" id="countLabel">6 plans</span></div>
   <main class="cards" id="cards"></main>
   <p class="disclaimer">Illustrative prototype only. Prices, reward points, availability and promotional countdowns are sample content and do not represent live MTN offers.</p>
   <nav class="bottom-nav" aria-label="Main navigation">
@@ -147,7 +147,7 @@ function deviceSvg(type){
 function render(){
  const q=searchInput.value.trim().toLowerCase();
  let items=(currentCategory==="Devices"?devices:plans.filter(p=>p.category===currentCategory)).filter(x=>(x.name+" "+x.desc).toLowerCase().includes(q));
- document.getElementById("sectionTitle").textContent=currentCategory==="Internet"?"Recommended for you":currentCategory==="Call & Message"?"Call & message bundles":"Devices & connectivity";
+ document.getElementById("sectionTitle").textContent=currentCategory==="Internet"?"Internet bundles":currentCategory==="Call & Message"?"Call & message bundles":"Devices & connectivity";
  document.getElementById("countLabel").textContent=items.length+(currentCategory==="Devices"?" devices":currentCategory==="Internet"?" plans":" bundles");
  cards.innerHTML="";
  if(!items.length){cards.innerHTML='<div class="empty">No results found. Try a different search.</div>';return}
