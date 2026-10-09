@@ -45,7 +45,7 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .ribbon.expired{background:#fde4e4;color:#b3261e}
 .status-row + .card-top{padding-top:12px}
 .card-top > div:first-child{min-width:0;overflow-wrap:anywhere}
-.card-meta{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid #f0f0f0;background:#fdfdfd;gap:8px}
+.card-meta{display:flex;align-items:center;justify-content:space-between;padding:2px 16px 16px;gap:8px}
 .meta-left{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .meta{display:flex;gap:5px;align-items:center;color:#5f6268;font-size:11px}
 .meta svg{width:14px;height:14px}
@@ -53,7 +53,13 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .timer strong{font-variant-numeric:tabular-nums;letter-spacing:.5px}
 .primary{border:0;border-radius:10px;background:var(--mtn-yellow);padding:11px 18px;font-size:12px;font-weight:850;color:#111;min-width:95px}
 .primary:active{transform:scale(.98)}
-.card-meta .primary{white-space:nowrap;flex-shrink:0;padding:10px 16px;min-width:0}
+.renew{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.renew-label{font-size:11px;font-weight:650;color:#5f6268;white-space:nowrap}
+.switch{width:44px;height:26px;border:0;border-radius:999px;background:#cfd1d4;position:relative;padding:0;flex-shrink:0;transition:background .18s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0003;transition:transform .18s}
+.switch[aria-checked="true"]{background:var(--green)}
+.switch[aria-checked="true"]::after{transform:translateX(18px)}
+.switch:focus-visible{outline:2px solid #171717;outline-offset:2px}
 .device-card{padding:16px;display:flex;gap:13px;align-items:center}
 .device-art{width:65px;height:68px;border-radius:13px;background:#fff7cf;display:grid;place-items:center;flex-shrink:0}
 .device-art svg{width:40px;height:40px;stroke:#262626;fill:none;stroke-width:1.8}
@@ -115,10 +121,10 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 <div class="modal-backdrop" id="modalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle">Plan details</h2><p id="modalDescription"></p><div class="modal-row"><span>Validity</span><strong id="modalValidity">—</strong></div><div class="modal-row"><span>Reward points</span><strong id="modalPoints">—</strong></div><div class="modal-row"><span>Price</span><strong id="modalPrice">—</strong></div><button class="primary" id="modalContinue">Continue</button><button class="icon-btn" id="modalClose" style="width:100%;border-radius:10px;margin-top:8px">Close</button></section></div>
 <script>
 const plans = [
- {category:"Internet",name:"30 GB",qty:30,unit:"GB",price:"₦10,000",desc:"Stay connected for longer",validity:"30 Days",points:"40,055",status:"active"},
+ {category:"Internet",name:"30 GB",qty:30,unit:"GB",price:"₦10,000",desc:"Stay connected for longer",validity:"30 Days",points:"40,055",status:"active",autoRenew:true},
  {category:"Internet",name:"15 GB",qty:15,unit:"GB",price:"₦5,000",desc:"Everyday data bundle",validity:"20 Days",points:"10,500",status:"expiring"},
  {category:"Internet",name:"5 GB",qty:5,unit:"GB",price:"₦1,500",desc:"Great for everyday browsing",validity:"7 Days",points:"2,500",status:"expired"},
- {category:"Call & Message",name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",desc:"Voice bundle",validity:"30 Days",points:"2,500",status:"active"},
+ {category:"Call & Message",name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",desc:"Voice bundle",validity:"30 Days",points:"2,500",status:"active",autoRenew:true},
  {category:"Call & Message",name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",desc:"Voice bundle",validity:"7 Days",points:"1,000"},
  {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",desc:"SMS bundle",validity:"7 Days",points:"300"}
 ];
@@ -155,8 +161,9 @@ function render(){
   }else{
    const st=statusLabels[item.status];
    const ribbon=st?`<div class="status-row"><span class="ribbon ${item.status}">${st}</span></div>`:"";
-   el.innerHTML=`${ribbon}<div class="card-top"><div><div class="allowance">${item.name}</div><div class="description">${item.desc}</div></div><div class="price">${item.price}<small>incl. applicable taxes</small></div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("share")} ${shareText(item)}</span></div><button class="primary">Select plan</button></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}`;
-   el.querySelector(".primary").addEventListener("click",()=>openModal(item,false));
+   el.innerHTML=`${ribbon}<div class="card-top"><div><div class="allowance">${item.name}</div><div class="description">${item.desc}</div></div><div class="price">${item.price}<small>incl. applicable taxes</small></div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("share")} ${shareText(item)}</span></div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}`;
+   const sw=el.querySelector(".switch");
+   sw.addEventListener("click",()=>{item.autoRenew=!item.autoRenew;sw.setAttribute("aria-checked",item.autoRenew);toast("Auto-renewal turned "+(item.autoRenew?"on":"off")+" for "+item.name+".")});
   }
   cards.appendChild(el);
  });
