@@ -49,14 +49,11 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .meta-left{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .meta{display:flex;gap:5px;align-items:center;color:#5f6268;font-size:11px}
 .meta svg{width:14px;height:14px}
-.points{font-size:11px;color:#555;font-weight:650;white-space:nowrap}
-.points b{color:#a87900}
 .timer{padding:9px 16px;background:#fff9dd;border-top:1px solid #f6e8a7;color:#695600;font-size:11px;display:flex;justify-content:space-between;align-items:center}
 .timer strong{font-variant-numeric:tabular-nums;letter-spacing:.5px}
-.card-action{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.fineprint{font-size:10px;color:#8b8b8b;line-height:1.4}
 .primary{border:0;border-radius:10px;background:var(--mtn-yellow);padding:11px 18px;font-size:12px;font-weight:850;color:#111;min-width:95px}
 .primary:active{transform:scale(.98)}
+.card-meta .primary{white-space:nowrap;flex-shrink:0;padding:10px 16px;min-width:0}
 .device-card{padding:16px;display:flex;gap:13px;align-items:center}
 .device-art{width:65px;height:68px;border-radius:13px;background:#fff7cf;display:grid;place-items:center;flex-shrink:0}
 .device-art svg{width:40px;height:40px;stroke:#262626;fill:none;stroke-width:1.8}
@@ -158,7 +155,7 @@ function render(){
   }else{
    const st=statusLabels[item.status];
    const ribbon=st?`<div class="status-row"><span class="ribbon ${item.status}">${st}</span></div>`:"";
-   el.innerHTML=`${ribbon}<div class="card-top"><div><div class="allowance">${item.name}</div><div class="description">${item.desc}</div></div><div class="price">${item.price}<small>incl. applicable taxes</small></div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("share")} ${shareText(item)}</span></div><span class="points"><b>★</b> ${item.points} pts</span></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}<div class="card-action"><span class="fineprint">Tap to view bundle details</span><button class="primary">Select plan</button></div>`;
+   el.innerHTML=`${ribbon}<div class="card-top"><div><div class="allowance">${item.name}</div><div class="description">${item.desc}</div></div><div class="price">${item.price}<small>incl. applicable taxes</small></div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("share")} ${shareText(item)}</span></div><button class="primary">Select plan</button></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}`;
    el.querySelector(".primary").addEventListener("click",()=>openModal(item,false));
   }
   cards.appendChild(el);
