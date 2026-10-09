@@ -133,19 +133,24 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 <div class="modal-backdrop" id="modalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle">Plan details</h2><p id="modalDescription"></p><div class="modal-row"><span>Validity</span><strong id="modalValidity">—</strong></div><div class="modal-row"><span>Reward points</span><strong id="modalPoints">—</strong></div><div class="modal-row"><span>Price</span><strong id="modalPrice">—</strong></div><button class="primary" id="modalContinue">Continue</button><button class="icon-btn" id="modalClose" style="width:100%;border-radius:10px;margin-top:8px">Close</button></section></div>
 <script>
 const plans = [
- {category:"Internet",name:"30 GB",qty:30,unit:"GB",price:"₦10,000",type:"Monthly Plan",validity:"30 Days",points:"40,055",status:"active",autoRenew:true},
- {category:"Internet",name:"15 GB",qty:15,unit:"GB",price:"₦5,000",type:"Betamix Bundle Max",validity:"20 Days",points:"10,500",status:"expiring"},
- {category:"Internet",name:"10 GB",qty:10,unit:"GB",price:"₦3,500",type:"Monthly Plan",validity:"30 Days",points:"5,000",status:"exhausted"},
- {category:"Internet",name:"5 GB",qty:5,unit:"GB",price:"₦1,500",type:"Weekly Plan",validity:"7 Days",points:"2,500",status:"expired"},
- {category:"Call & Message",name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",type:"Monthly Plan",validity:"30 Days",points:"2,500",status:"active",autoRenew:true},
- {category:"Call & Message",name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",type:"Weekly Plan",validity:"7 Days",points:"1,000",status:"exhausted"},
- {category:"Call & Message",name:"50 SMS",qty:50,unit:"SMS",price:"₦300",type:"Weekly Plan",validity:"7 Days",points:"300"},
+ {category:"Internet",lines:["primary"],name:"30 GB",qty:30,unit:"GB",price:"₦10,000",type:"Monthly Plan",validity:"30 Days",points:"40,055",status:"active",autoRenew:true},
+ {category:"Internet",lines:["primary"],name:"15 GB",qty:15,unit:"GB",price:"₦5,000",type:"Betamix Bundle Max",validity:"20 Days",points:"10,500",status:"expiring"},
+ {category:"Internet",lines:["primary"],name:"10 GB",qty:10,unit:"GB",price:"₦3,500",type:"Monthly Plan",validity:"30 Days",points:"5,000",status:"exhausted"},
+ {category:"Internet",lines:["primary"],name:"5 GB",qty:5,unit:"GB",price:"₦1,500",type:"Weekly Plan",validity:"7 Days",points:"2,500",status:"expired"},
+ {category:"Call & Message",lines:["primary"],name:"200 Minutes",qty:200,unit:"Min",price:"₦2,500",type:"Monthly Plan",validity:"30 Days",points:"2,500",status:"active",autoRenew:true},
+ {category:"Call & Message",lines:["primary"],name:"100 Minutes",qty:100,unit:"Min",price:"₦1,000",type:"Weekly Plan",validity:"7 Days",points:"1,000",status:"exhausted"},
+ {category:"Call & Message",lines:["primary"],name:"50 SMS",qty:50,unit:"SMS",price:"₦300",type:"Weekly Plan",validity:"7 Days",points:"300"},
  {category:"Internet",lines:["fibrex"],name:"FibreX",price:"₦20,000",type:"50Mbps",validity:"30 Days",points:"20,000",status:"active",autoRenew:true},
  {category:"Internet",lines:["flyx"],name:"FlyX (ODU)",price:"₦35,000",type:"100Mbps",validity:"30 Days",points:"35,000",status:"expiring"},
- {category:"Entertainment",name:"Netflix",price:"₦5,000",type:"Standard Plan",validity:"30 Days",points:"5,000",status:"active",autoRenew:true},
- {category:"Entertainment",name:"Apple Music",price:"₦1,500",type:"Individual Plan",validity:"30 Days",points:"1,500",status:"active"},
- {category:"Entertainment",name:"Spotify",price:"₦1,300",type:"Premium Individual",validity:"30 Days",points:"1,300",status:"expiring"},
- {category:"Entertainment",name:"DSTV",price:"₦15,700",type:"Compact Plan",validity:"30 Days",points:"15,700",status:"expired"}
+ {category:"Entertainment",lines:["primary"],name:"Netflix",price:"₦5,000",type:"Standard Plan",validity:"30 Days",points:"5,000",status:"active",autoRenew:true},
+ {category:"Entertainment",lines:["primary"],name:"Apple Music",price:"₦1,500",type:"Individual Plan",validity:"30 Days",points:"1,500",status:"active"},
+ {category:"Entertainment",lines:["primary"],name:"Spotify",price:"₦1,300",type:"Premium Individual",validity:"30 Days",points:"1,300",status:"expiring"},
+ {category:"Entertainment",lines:["primary"],name:"DSTV",price:"₦15,700",type:"Compact Plan",validity:"30 Days",points:"15,700",status:"expired"},
+ {category:"Internet",lines:["work"],name:"100 GB",qty:100,unit:"GB",price:"₦30,000",type:"Business Monthly Plan",validity:"30 Days",points:"30,000",status:"active",autoRenew:true},
+ {category:"Internet",lines:["work"],name:"50 GB",qty:50,unit:"GB",price:"₦17,000",type:"Corporate Bundle",validity:"30 Days",points:"17,000",status:"expiring"},
+ {category:"Internet",lines:["work"],name:"20 GB",qty:20,unit:"GB",price:"₦6,000",type:"Business Weekly Plan",validity:"7 Days",points:"6,000",status:"exhausted"},
+ {category:"Call & Message",lines:["work"],name:"500 Minutes",qty:500,unit:"Min",price:"₦8,000",type:"Business Voice Plan",validity:"30 Days",points:"8,000",status:"active",autoRenew:true},
+ {category:"Call & Message",lines:["work"],name:"1,000 SMS",qty:1000,unit:"SMS",price:"₦2,500",type:"Bulk SMS Bundle",validity:"30 Days",points:"2,500",status:"expired"}
 ];
 const SHARE_MAX=0.2;
 const shareText=item=>{const v=Math.round(item.qty*SHARE_MAX*10)/10;return "Share up to "+v+" "+item.unit};
@@ -202,11 +207,10 @@ function toast(msg){const el=document.getElementById("toast");el.textContent=msg
 const numbers=[
  {id:"primary",number:"0803 555 0142",label:"Primary"},
  {id:"work",number:"0813 555 0187",label:"Work"},
- {id:"family",number:"0903 555 0126",label:"Family"},
  {id:"fibrex",number:"0706 555 0153",label:"FibreX",dedicated:true},
  {id:"flyx",number:"0816 555 0164",label:"FlyX (ODU)",dedicated:true}
 ];
-const belongsToActive=item=>item.lines?item.lines.includes(numbers[activeNumber].id):!numbers[activeNumber].dedicated;
+const belongsToActive=item=>item.lines.includes(numbers[activeNumber].id);
 let activeNumber=0;
 const numBtn=document.getElementById("numBtn"),numMenu=document.getElementById("numMenu"),numCurrent=document.getElementById("numCurrent");
 const checkIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
