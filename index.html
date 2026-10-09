@@ -45,6 +45,15 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .ribbon.exhausted{background:#e6e9f2;color:#3b4766}
 .status-row + .card-top{padding-top:12px}
 .card-top > div:first-child{min-width:0;overflow-wrap:anywhere}
+.plan-card.expandable{cursor:pointer}
+.card-top:focus-visible{outline:2px solid #171717;outline-offset:-2px;border-radius:16px}
+.price.has-chev{display:flex;align-items:center;gap:6px}
+.chev{width:16px;height:16px;color:#8a8d93;flex-shrink:0;transition:transform .2s}
+.plan-card.open .chev{transform:rotate(180deg)}
+.pay-panel{display:grid;grid-template-rows:0fr;visibility:hidden;cursor:default;transition:grid-template-rows .22s ease,visibility 0s .22s}
+.plan-card.open .pay-panel{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .22s ease,visibility 0s}
+.pay-inner{overflow:hidden;min-height:0;padding:0 16px}
+.pay-btn{width:100%;padding:13px;margin-bottom:16px}
 .card-meta{display:flex;align-items:center;justify-content:space-between;padding:2px 16px 16px;gap:8px}
 .meta-left{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .meta{display:flex;gap:5px;align-items:center;color:#5f6268;font-size:11px}
@@ -162,9 +171,19 @@ function render(){
   }else{
    const st=statusLabels[item.status];
    const ribbon=st?`<div class="status-row"><span class="ribbon ${item.status}">${st}</span></div>`:"";
-   el.innerHTML=`${ribbon}<div class="card-top"><div><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div><div class="price">${item.price}</div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("share")} ${shareText(item)}</span></div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}`;
+   const action=(item.status==="active"||item.status==="expiring")?"Stack Plan":(item.status==="expired"||item.status==="exhausted")?"Renew Plan":null;
+   const chev=action?'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>':"";
+   el.innerHTML=`${ribbon}<div class="card-top"${action?' tabindex="0" role="button" aria-expanded="false"':""}><div><div class="allowance">${item.name}</div><div class="description">${item.type}</div></div><div class="price${action?" has-chev":""}">${item.price}${chev}</div></div><div class="card-meta"><div class="meta-left"><span class="meta">${icon("calendar")} ${item.validity}</span><span class="meta">${icon("share")} ${shareText(item)}</span></div><div class="renew"><span class="renew-label">Auto-renewal</span><button class="switch" role="switch" aria-checked="${!!item.autoRenew}" aria-label="Auto-renewal for ${item.name}"></button></div></div>${item.timer?`<div class="timer"><span>Limited-time offer ends in</span><strong>${item.timer}</strong></div>`:""}${action?`<div class="pay-panel"><div class="pay-inner"><button class="primary pay-btn">${action}</button></div></div>`:""}`;
    const sw=el.querySelector(".switch");
    sw.addEventListener("click",()=>{item.autoRenew=!item.autoRenew;sw.setAttribute("aria-checked",item.autoRenew);toast("Auto-renewal turned "+(item.autoRenew?"on":"off")+" for "+item.name+".")});
+   if(action){
+    const top=el.querySelector(".card-top");
+    el.classList.add("expandable");
+    const toggleCard=()=>{const open=el.classList.toggle("open");top.setAttribute("aria-expanded",open)};
+    el.addEventListener("click",e=>{if(e.target.closest(".renew,.pay-panel"))return;toggleCard()});
+    top.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggleCard()}});
+    el.querySelector(".pay-btn").addEventListener("click",()=>toast(action+" for "+item.name+" is a prototype placeholder."));
+   }
   }
   cards.appendChild(el);
  });
