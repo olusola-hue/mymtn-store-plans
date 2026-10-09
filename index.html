@@ -208,15 +208,16 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
 .hist .neg{color:#b3261e}
 .bills-chart{padding:4px 20px 14px;border-bottom:1px solid #f0f0f0;margin-bottom:16px}
 .bills-h{margin:0 0 14px;font-size:20px;letter-spacing:-.4px}
-.chart-plot{position:relative;height:130px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 6px 0 38px}
-.chart-plot::before,.chart-plot::after{content:"";position:absolute;left:38px;right:0;border-top:1px dashed #d8d8d8}
+.chart-plot{position:relative;height:130px;margin:8px 0 0}
+.chart-plot::before,.chart-plot::after{content:"";position:absolute;left:38px;right:6px;border-top:1px dashed #d8d8d8}
 .chart-plot::before{top:0}.chart-plot::after{top:50%}
 .grid-l{position:absolute;left:0;font-size:10px;color:#8a8d93;transform:translateY(-50%)}
-.bar-col{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:30px}
-.bar{width:12px;border-radius:7px;background:#171717;min-height:6px}
-.bar.due{background:var(--mtn-yellow);box-shadow:inset 0 0 0 2px #171717}
-.chart-x{display:flex;justify-content:space-between;padding:8px 6px 0 38px;font-size:11px;color:#555}
-.chart-x span{width:30px;text-align:center}
+.plot-area{position:absolute;left:38px;right:6px;top:0;bottom:0;border-bottom:1px solid #d8d8d8}
+.plot-area svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.dot{position:absolute;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:#171717;border:2px solid #fff;box-sizing:content-box}
+.dot.due{width:11px;height:11px;background:var(--mtn-yellow);box-shadow:0 0 0 2px #171717}
+.chart-x{display:grid;grid-template-columns:repeat(6,1fr);padding:8px 6px 0 38px;font-size:11px;color:#555}
+.chart-x span{text-align:center}
 .bills-acct{padding:0 20px 12px;font-size:17px;font-weight:800;letter-spacing:-.2px}
 .bills-list{padding:0 16px;display:grid;gap:12px}
 .bill-card{border:1px solid #e9e9e9;border-radius:15px;padding:14px 16px;background:#fff}
@@ -627,7 +628,9 @@ const billsAcct=document.getElementById("billsAcct"),billsList=document.getEleme
 function renderBills(){
  const max=60000,num=numbers[activeNumber];
  billsAcct.textContent="Account: "+num.number;
- billsChart.innerHTML=`<div class="chart-plot" role="img" aria-label="Bar chart of your last six bills: ${bills.map(b=>b.m+" "+naira(b.amt)).join(", ")}"><span class="grid-l" style="top:0">₦60k</span><span class="grid-l" style="top:50%">₦30k</span>${bills.map(b=>`<div class="bar-col"><div class="bar${b.status==="due"?" due":""}" style="height:${b.amt/max*100}%"></div></div>`).join("")}</div><div class="chart-x" aria-hidden="true">${bills.map(b=>`<span>${b.m.slice(0,3)}</span>`).join("")}</div>`;
+ const lo=20000,hi=40000,n=bills.length,X=k=>(k+.5)/n*100,Y=a=>100-(a-lo)/(hi-lo)*100;
+ const pts=bills.map((b,k)=>X(k).toFixed(2)+","+Y(b.amt).toFixed(2)).join(" ");
+ billsChart.innerHTML=`<div class="chart-plot" role="img" aria-label="Line chart of your last six bills: ${bills.map(b=>b.m+" "+naira(b.amt)).join(", ")}"><span class="grid-l" style="top:0">₦40k</span><span class="grid-l" style="top:50%">₦30k</span><span class="grid-l" style="top:100%">₦20k</span><div class="plot-area"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="#171717" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>${bills.map((b,k)=>`<span class="dot${b.status==="due"?" due":""}" style="left:${X(k)}%;top:${Y(b.amt)}%"></span>`).join("")}</div></div><div class="chart-x" aria-hidden="true">${bills.map(b=>`<span>${b.m.slice(0,3)}</span>`).join("")}</div>`;
  billsList.innerHTML=bills.slice().reverse().map((b,i)=>{const idx=bills.length-1-i,due=b.status==="due";
   return `<article class="bill-card${due?" due":""}"><div class="bill-top"><span>${b.per}</span>${due?`<span class="bill-state due-t">Due ${b.due.slice(0,6)}</span>`:`<span class="bill-state">Paid <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.500 4.500 4.500L19 7.500"/></svg></span>`}</div><div class="bill-bot"><span>${b.m}</span><b>${naira(b.amt)}</b></div>${due?`<button class="primary" data-bill="${idx}">Pay Bill</button>`:""}</article>`}).join("");
 }
