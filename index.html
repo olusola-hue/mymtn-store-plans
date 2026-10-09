@@ -16,10 +16,21 @@ button{cursor:pointer}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 16px}
 .brand{display:flex;align-items:center;gap:10px}
 h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
-.top-actions{display:flex;gap:10px}
 .icon-btn{width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:white;display:grid;place-items:center;position:relative;color:#222}
 .icon-btn svg{width:20px;height:20px}
-.dot{position:absolute;right:8px;top:7px;width:7px;height:7px;background:#e53935;border:1px solid white;border-radius:50%}
+.num-switch{position:relative}
+.num-btn{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px 0 14px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:13px;font-weight:750;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.num-btn:focus-visible,.num-opt:focus-visible{outline:2px solid #171717;outline-offset:2px}
+.num-chev{width:16px;height:16px;color:#8a8d93;transition:transform .2s;flex-shrink:0}
+.num-btn[aria-expanded="true"] .num-chev{transform:rotate(180deg)}
+.num-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:8;min-width:220px;margin:0;padding:6px;list-style:none;background:#fff;border:1px solid #e9e9e9;border-radius:16px;box-shadow:0 10px 30px #0002}
+.num-menu[hidden]{display:none}
+.num-opt{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:11px 12px;border:0;border-radius:11px;background:transparent;text-align:left;color:var(--ink)}
+.num-opt:hover{background:#f6f6f6}
+.num-opt[aria-selected="true"]{background:#fff7cf}
+.num-opt b{display:block;font-size:14px;font-variant-numeric:tabular-nums}
+.num-opt small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.num-opt svg{width:18px;height:18px;color:var(--green);flex-shrink:0}
 .search-wrap{padding:0 20px 18px}
 .search{height:46px;border:1px solid #e6e6e6;background:#fafafa;border-radius:13px;display:flex;align-items:center;gap:10px;padding:0 13px}
 .search svg{width:19px;color:#777;flex-shrink:0}
@@ -96,9 +107,9 @@ h1{font-size:23px;letter-spacing:-.6px;margin:0;font-weight:800}
   <div class="status"><span>9:41</span><span>●●●　▰</span></div>
   <header class="topbar">
     <div class="brand"><h1>Pay Bills</h1></div>
-    <div class="top-actions">
-      <button class="icon-btn" id="searchFocus" aria-label="Focus search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></button>
-      <button class="icon-btn" id="notifications" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span class="dot"></span></button>
+    <div class="num-switch">
+      <button class="num-btn" id="numBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Switch number"><span id="numCurrent"></span><svg class="num-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <ul class="num-menu" id="numMenu" role="listbox" aria-label="Your numbers" hidden></ul>
     </div>
   </header>
   <div class="search-wrap"><label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="searchInput" type="search" placeholder="Search plans or subscriptions…" autocomplete="off"></label></div>
@@ -182,14 +193,27 @@ function openModal(item,isDevice){
 function closeModal(){document.getElementById("modalBackdrop").classList.remove("open")}
 document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{currentCategory=btn.dataset.category;document.querySelectorAll(".tab").forEach(t=>{let active=t===btn;t.classList.toggle("active",active);t.setAttribute("aria-selected",active)});render()}));
 searchInput.addEventListener("input",render);
-document.getElementById("searchFocus").addEventListener("click",()=>searchInput.focus());
-document.getElementById("notifications").addEventListener("click",()=>toast("You're all caught up. New offers and account alerts will appear here."));
 document.querySelectorAll("[data-nav]").forEach(btn=>btn.addEventListener("click",()=>{const dest=btn.dataset.nav;if(dest==="Pay"){toast("You're already in Pay.");return}toast(dest+" navigation is a prototype placeholder.")}));
 document.getElementById("modalClose").addEventListener("click",closeModal);
 document.getElementById("modalBackdrop").addEventListener("click",e=>{if(e.target.id==="modalBackdrop")closeModal()});
 document.getElementById("modalContinue").addEventListener("click",()=>{closeModal();toast(selected&&selected.category==="Devices"?"Device enquiry is a prototype placeholder.":"Plan purchase is a prototype placeholder.")});
 let toastTimer;
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2800)}
+const numbers=[{number:"0803 555 0142",label:"Primary"},{number:"0813 555 0187",label:"Work"},{number:"0903 555 0126",label:"Family"}];
+let activeNumber=0;
+const numBtn=document.getElementById("numBtn"),numMenu=document.getElementById("numMenu"),numCurrent=document.getElementById("numCurrent");
+const checkIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+function renderNumbers(){
+ numCurrent.textContent=numbers[activeNumber].number;
+ numMenu.innerHTML=numbers.map((n,i)=>`<li role="presentation"><button class="num-opt" role="option" data-i="${i}" aria-selected="${i===activeNumber}"><span><b>${n.number}</b><small>${n.label}</small></span>${i===activeNumber?checkIcon:""}</button></li>`).join("");
+}
+function setNumMenu(open){numMenu.hidden=!open;numBtn.setAttribute("aria-expanded",open);if(open){const sel=numMenu.querySelector('[aria-selected="true"]');sel&&sel.focus()}}
+numBtn.addEventListener("click",()=>setNumMenu(numMenu.hidden));
+numMenu.addEventListener("click",e=>{const b=e.target.closest(".num-opt");if(!b)return;activeNumber=+b.dataset.i;renderNumbers();setNumMenu(false);numBtn.focus();toast("Switched to "+numbers[activeNumber].number+".")});
+numMenu.addEventListener("keydown",e=>{const opts=[...numMenu.querySelectorAll(".num-opt")],i=opts.indexOf(document.activeElement);if(e.key==="ArrowDown"){e.preventDefault();opts[(i+1)%opts.length].focus()}else if(e.key==="ArrowUp"){e.preventDefault();opts[(i-1+opts.length)%opts.length].focus()}});
+document.addEventListener("click",e=>{if(!numMenu.hidden&&!e.target.closest(".num-switch"))setNumMenu(false)});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!numMenu.hidden){setNumMenu(false);numBtn.focus()}});
+renderNumbers();
 render();
 </script>
 </body>
